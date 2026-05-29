@@ -1,17 +1,9 @@
 import Link from "next/link";
-import { BookOpen, Headphones, Video, Home, Search, Mail } from "lucide-react";
+import { Home, Search } from "lucide-react";
 import SearchBar from "./SearchBar";
 import ThemeToggle from "./ThemeToggle";
 import HijriToday from "./HijriToday";
 import IslamicStar from "./IslamicStar";
-
-const links = [
-  { href: "/", label: "الرئيسية", icon: Home },
-  { href: "/audio", label: "صوتيات", icon: Headphones },
-  { href: "/video", label: "مرئيات", icon: Video },
-  { href: "/written", label: "مقالات وكتب", icon: BookOpen },
-  { href: "/contact", label: "تواصل معنا", icon: Mail },
-];
 
 export default function Navbar() {
   return (
@@ -42,19 +34,6 @@ export default function Navbar() {
             </div>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-1">
-            {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="px-3 py-2 rounded-lg text-sm font-medium text-ink/80 dark:text-sand/80 hover:text-ink dark:hover:text-sand hover:bg-ink/5 dark:hover:bg-white/10 transition flex items-center gap-2"
-              >
-                <l.icon className="h-4 w-4 text-brown dark:text-gold" />
-                {l.label}
-              </Link>
-            ))}
-          </nav>
-
           <div className="flex items-center gap-2">
             <div className="hidden md:block md:w-64 lg:w-80">
               <SearchBar compact />
@@ -68,22 +47,17 @@ export default function Navbar() {
               <Search className="h-5 w-5" />
             </Link>
 
+            <Link
+              href="/"
+              className="btn-ghost p-2"
+              aria-label="الرئيسية"
+            >
+              <Home className="h-5 w-5" />
+            </Link>
+
             <ThemeToggle compact />
           </div>
         </div>
-
-        <nav className="flex lg:hidden items-center gap-1 pb-3 overflow-x-auto">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-dark-card border border-ink/10 dark:border-dark-border text-ink/80 dark:text-sand/80 hover:bg-gold dark:hover:bg-gold hover:text-ink hover:border-gold transition flex items-center gap-1.5"
-            >
-              <l.icon className="h-3.5 w-3.5" />
-              {l.label}
-            </Link>
-          ))}
-        </nav>
       </div>
     </header>
   );

@@ -53,8 +53,13 @@ const _itemProxy = new Proxy(_origItem, {
         take?: number;
         skip?: number;
       }) => {
-        const dbResult = await target.findMany(args).catch(() => []);
-        if ((dbResult as unknown[]).length > 0) return dbResult;
+        let dbResult: unknown[] = [];
+        try {
+          dbResult = (await target.findMany(args)) as unknown[];
+        } catch {
+          // DB unavailable, fall through to dev data
+        }
+        if (dbResult.length > 0) return dbResult;
 
         const devItems = await getDevItems();
         let result = devItems.map((i) => wrapDevItem(i as Record<string, unknown>));
@@ -123,8 +128,13 @@ const _itemProxy = new Proxy(_origItem, {
 
     if (prop === "findUnique" || prop === "findFirst") {
       return async (args: { where: Record<string, unknown> }) => {
-        const dbResult = await (target as Record<string, Function>)[prop](args).catch(() => null);
-        if (dbResult) return dbResult;
+        try {
+          const fn = (target as unknown as Record<string, (args: unknown) => Promise<unknown>>)[prop];
+          const dbResult = await fn(args);
+          if (dbResult) return dbResult;
+        } catch {
+          // DB unavailable, fall through to dev data
+        }
 
         const devItems = await getDevItems();
         const id = args.where.id as string;
@@ -135,7 +145,12 @@ const _itemProxy = new Proxy(_origItem, {
 
     if (prop === "count") {
       return async (args?: { where?: Record<string, unknown> }) => {
-        const dbResult = await target.count(args).catch(() => -1);
+        let dbResult = -1;
+        try {
+          dbResult = await target.count(args);
+        } catch {
+          // DB unavailable, fall through to dev data
+        }
         if (dbResult >= 0) return dbResult;
 
         const devItems = await getDevItems();

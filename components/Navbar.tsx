@@ -20,15 +20,15 @@ export default function Navbar() {
 
       <div className="container">
         <div className="flex items-center justify-between gap-4 py-3">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="h-11 w-11 rounded-xl bg-ink dark:bg-gold text-gold dark:text-ink flex items-center justify-center shadow-soft p-1.5">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group">
+            <div className="h-10 w-10 sm:h-11 sm:w-11 shrink-0 rounded-xl bg-ink dark:bg-gold text-gold dark:text-ink flex items-center justify-center shadow-soft p-1.5">
               <IslamicStar className="h-full w-full" strokeWidth={4} />
             </div>
             <div className="leading-tight">
-              <div className="font-display font-bold text-ink dark:text-sand">
+              <div className="font-display font-bold text-ink dark:text-sand whitespace-nowrap text-[13px] sm:text-base">
                 الشيخ خالد بن علي الجريش
               </div>
-              <div className="text-xs text-muted">
+              <div className="hidden sm:block text-xs text-muted">
                 مكتبة رقمية للمحاضرات والكتب
               </div>
             </div>

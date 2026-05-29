@@ -38,9 +38,9 @@ function pubDate(ep) {
 }
 
 async function run() {
-  const key = process.env.RUN_PROGRAM_IMPORT;
+  const key = process.env.RUN_PROGRAM_IMPORT || process.argv[2];
   if (!key || !CONFIG[key]) {
-    console.log(`[import-program] skipped (RUN_PROGRAM_IMPORT not set to a known key).`);
+    console.log(`[import-program] skipped (no program key via env or argv).`);
     return;
   }
   const cfg = CONFIG[key];

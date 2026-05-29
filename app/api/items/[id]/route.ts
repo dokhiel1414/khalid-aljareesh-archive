@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "@/lib/auth";
 import { extractDriveFileId } from "@/lib/drive";
 import { loadDevItems } from "@/lib/dev-data";
-import { parseTopics } from "../route";
+import { parseTopics } from "@/lib/topics";
 
 export const runtime = "nodejs";
 

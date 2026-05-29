@@ -1,0 +1,325 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- Thmanyah Serif Display (local files, no external download) ---- */
+@font-face {
+  font-family: "ThmanyahSerif";
+  src: url("/fonts/thmanyahserifdisplay-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ThmanyahSerif";
+  src: url("/fonts/thmanyahserifdisplay-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ThmanyahSerif";
+  src: url("/fonts/thmanyahserifdisplay-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ThmanyahSerif";
+  src: url("/fonts/thmanyahserifdisplay-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ThmanyahSerif";
+  src: url("/fonts/thmanyahserifdisplay-Black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Traditional Arabic Morph — used ONLY inside the article reading view
+   (.prose). All other UI keeps ThmanyahSerif. PDFs render inside iframes
+   and are unaffected. */
+@font-face {
+  font-family: "TradArabicMorph";
+  src: url("/fonts/traditional-arabic-morph.ttf") format("truetype");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* =====================================================================
+   THEME SYSTEM
+   Colours are RGB channel triplets (so Tailwind opacity modifiers work)
+   exposed as CSS variables. Swapping the variable set on <html> switches
+   the entire site's palette + UI font.
+
+   Default (:root) = Classic warm palette (Thmanyah serif).
+   .theme-ocean     = Light blue/cyan airy palette (Tajawal).
+   ===================================================================== */
+:root {
+  --c-ink: 7 44 73;          /* primary dark / text       #072C49 */
+  --c-gold: 222 164 112;     /* accent                    #DEA470 */
+  --c-brown: 193 126 90;     /* secondary accent          #C17E5A */
+  --c-sand: 236 230 221;     /* light background          #ECE6DD */
+  --c-ink-2: 10 58 94;       /* darker primary            #0A3A5E */
+  --c-sand-2: 245 241 234;   /* lighter surface           #F5F1EA */
+  --c-dark-bg: 6 34 58;      /* dark-mode background      #06223A */
+  --c-dark-surface: 10 58 94;
+  --c-dark-card: 13 67 108;
+  --c-dark-border: 19 80 127;
+
+  --font-body: "ThmanyahSerif";
+  --font-display-f: "ThmanyahSerif";
+
+  /* hero gradient stops (rgb channels) */
+  --hero-a: var(--c-gold);
+  --hero-b: var(--c-brown);
+  --hero-from: var(--c-ink);
+  --hero-to: var(--c-ink-2);
+}
+
+.theme-ocean {
+  --c-ink: 15 27 45;         /* on-surface text           #0F1B2D */
+  --c-gold: 79 156 255;      /* primary blue              #4F9CFF */
+  --c-brown: 62 198 215;     /* secondary cyan            #3EC6D7 */
+  --c-sand: 244 247 252;     /* airy background           #F4F7FC */
+  --c-ink-2: 43 86 140;      /* deeper blue               #2B568C */
+  --c-sand-2: 255 255 255;   /* pure white surface        #FFFFFF */
+  --c-dark-bg: 23 23 21;     /* #171715 */
+  --c-dark-surface: 34 34 32;/* #222220 */
+  --c-dark-card: 39 39 37;   /* #272725 */
+  --c-dark-border: 67 67 66; /* #434342 */
+
+  --font-body: "Tajawal";
+  --font-display-f: "Tajawal";
+
+  --hero-from: 43 86 140;    /* blue gradient hero        #2B568C */
+  --hero-to: 79 156 255;     /* → #4F9CFF */
+}
+
+html,
+body {
+  background-color: rgb(var(--c-sand));
+  color: rgb(var(--c-ink));
+  font-feature-settings: "ss01", "ss02";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html.dark,
+html.dark body {
+  background-color: rgb(var(--c-dark-bg));
+  color: rgb(var(--c-sand));
+}
+
+::selection {
+  background: rgb(var(--c-gold));
+  color: rgb(var(--c-ink));
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 font-medium transition active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-gold/60;
+  }
+  .btn-primary {
+    @apply btn bg-ink text-sand hover:bg-ink-2 dark:bg-gold dark:text-ink dark:hover:bg-brown;
+  }
+  .btn-gold {
+    @apply btn bg-gold text-ink hover:bg-brown hover:text-sand;
+  }
+  .btn-ghost {
+    @apply btn bg-transparent text-ink hover:bg-ink/5 dark:text-sand dark:hover:bg-white/10;
+  }
+  .input {
+    @apply w-full rounded-xl border border-ink/15 bg-white px-4 py-2.5 text-ink placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold
+           dark:bg-dark-surface dark:border-dark-border dark:text-sand dark:placeholder:text-sand/40;
+  }
+  .label {
+    @apply block text-sm font-medium text-ink dark:text-sand mb-1.5;
+  }
+  .card {
+    @apply rounded-2xl bg-white border border-ink/5 shadow-soft hover:shadow-card transition overflow-hidden
+           dark:bg-dark-card dark:border-dark-border;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full bg-ink/5 text-ink px-3 py-1 text-xs font-medium
+           dark:bg-white/10 dark:text-sand;
+  }
+  .chip-gold {
+    @apply chip bg-gold/15 text-ink dark:bg-gold/25 dark:text-sand;
+  }
+  .section-title {
+    @apply font-display text-2xl md:text-3xl font-bold text-ink dark:text-sand;
+  }
+  .text-muted {
+    @apply text-ink/60 dark:text-sand/60;
+  }
+}
+
+.arabesque {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgb(var(--c-ink) / 0.06) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+html.dark .arabesque {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgb(var(--c-sand) / 0.08) 1px, transparent 0);
+}
+
+.gradient-hero {
+  background:
+    radial-gradient(60% 80% at 100% 0%, rgb(var(--hero-a) / 0.18) 0%, transparent 60%),
+    radial-gradient(50% 70% at 0% 100%, rgb(var(--hero-b) / 0.15) 0%, transparent 60%),
+    linear-gradient(180deg, rgb(var(--hero-from)) 0%, rgb(var(--hero-to)) 100%);
+}
+
+html.dark .gradient-hero {
+  background:
+    radial-gradient(60% 80% at 100% 0%, rgb(var(--c-gold) / 0.22) 0%, transparent 60%),
+    radial-gradient(50% 70% at 0% 100%, rgb(var(--c-brown) / 0.18) 0%, transparent 60%),
+    linear-gradient(180deg, rgb(var(--c-dark-bg)) 0%, rgb(var(--c-dark-surface)) 100%);
+}
+
+/* Prevent FOUC for theme toggle */
+html.dark { color-scheme: dark; }
+html { color-scheme: light; }
+
+/* ============================================================
+   Article reading view (.prose)
+   Hand-tuned typography for long Arabic religious texts.
+   ============================================================ */
+.prose {
+  font-family: "TradArabicMorph", "ThmanyahSerif", "Tajawal", serif;
+  /* Mobile baseline */
+  font-size: 1.3rem;
+  line-height: 2.05;
+  color: #1a3550;
+  word-spacing: 0.04em;
+}
+/* Larger screens — give the body a bit more weight */
+@media (min-width: 768px)  { .prose { font-size: 1.5rem; line-height: 2.1; } }
+@media (min-width: 1280px) { .prose { font-size: 1.625rem; line-height: 2.15; } }
+/* Make sure every nested element (paragraphs, headings, quotes, lists)
+   inside .prose inherits Trado too. */
+.prose p,
+.prose li,
+.prose blockquote,
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose span,
+.prose div,
+.prose strong,
+.prose em,
+.prose a {
+  font-family: inherit;
+}
+html.dark .prose { color: #E7DDD0; }
+
+.prose p {
+  margin: 0 0 1.1em;
+  text-align: justify;
+  text-justify: inter-word;
+  hanging-punctuation: first last;
+}
+.prose strong, .prose b { color: #072C49; font-weight: 700; }
+html.dark .prose strong, html.dark .prose b { color: #DEA470; }
+
+.prose em, .prose i { color: #6b3d24; font-style: italic; }
+html.dark .prose em, html.dark .prose i { color: #DEA470; }
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  font-family: inherit;
+  color: #072C49;
+  margin: 1.6em 0 0.6em;
+  line-height: 1.4;
+  font-weight: 700;
+}
+html.dark .prose h1, html.dark .prose h2, html.dark .prose h3, html.dark .prose h4 { color: #ECE6DD; }
+
+.prose h1 { font-size: 1.6em; }
+.prose h2 { font-size: 1.4em; border-bottom: 1px solid rgba(222,164,112,0.35); padding-bottom: 0.25em; }
+.prose h3 { font-size: 1.2em; color: #C17E5A; }
+.prose h4 { font-size: 1.08em; color: #C17E5A; }
+html.dark .prose h3, html.dark .prose h4 { color: #DEA470; }
+
+.prose ul, .prose ol { margin: 0.8em 0 1.1em; padding-inline-start: 1.6em; }
+.prose ul { list-style: disc; }
+.prose ol { list-style: arabic-indic; }
+.prose li { margin: 0.35em 0; }
+.prose li::marker { color: #C17E5A; }
+
+.prose blockquote {
+  border-right: 4px solid #DEA470;
+  padding: 0.25em 1em;
+  margin: 1.2em 0;
+  background: rgba(222,164,112,0.08);
+  border-radius: 0.5rem;
+  font-style: italic;
+  color: #4a5e75;
+}
+html.dark .prose blockquote { background: rgba(222,164,112,0.12); color: #d0c7b8; }
+
+.prose a {
+  color: #C17E5A;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.prose a:hover { color: #072C49; }
+html.dark .prose a { color: #DEA470; }
+html.dark .prose a:hover { color: #ECE6DD; }
+
+.prose hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(222,164,112,0.6), transparent);
+  margin: 1.8em auto;
+}
+
+.prose img {
+  max-width: 100%;
+  border-radius: 0.75rem;
+  margin: 1em auto;
+}
+
+.prose table { width: 100%; border-collapse: collapse; margin: 1em 0; }
+.prose th, .prose td {
+  border: 1px solid rgba(7,44,73,0.15);
+  padding: 0.5em 0.75em;
+}
+.prose th { background: rgba(222,164,112,0.12); font-weight: 700; }
+html.dark .prose th, html.dark .prose td { border-color: rgba(236,230,221,0.15); }
+
+/* TipTap editor placeholder + content styling */
+.ProseMirror {
+  outline: none;
+  min-height: 240px;
+}
+.ProseMirror p.is-editor-empty:first-child::before,
+.ProseMirror[data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  color: rgba(7, 44, 73, 0.4);
+  pointer-events: none;
+  height: 0;
+  float: right;
+}
+html.dark .ProseMirror[data-placeholder]:empty::before { color: rgba(236,230,221,0.4); }
+.ProseMirror :is(h1, h2, h3) { line-height: 1.4; }
+
+/* Quranic verses inside content — give them visual prominence */
+.prose .quran,
+.prose .ayah {
+  font-family: "Amiri Quran", "Traditional Arabic", serif;
+  color: #072C49;
+  background: rgba(222,164,112,0.12);
+  padding: 0.15em 0.5em;
+  border-radius: 0.35em;
+}
+html.dark .prose .quran, html.dark .prose .ayah { color: #DEA470; background: rgba(222,164,112,0.2); }
+

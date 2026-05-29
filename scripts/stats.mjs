@@ -1,0 +1,10 @@
+import { PrismaClient } from "@prisma/client";
+const p = new PrismaClient();
+const a = await p.item.count({ where: { category: "AUDIO" } });
+const v = await p.item.count({ where: { category: "VIDEO" } });
+const w = await p.item.count({ where: { category: "WRITTEN" } });
+const aNoId = await p.item.count({ where: { category: "AUDIO", driveFileId: null } });
+console.log("AUDIO:", a, "(without driveFileId:", aNoId, ")");
+console.log("VIDEO:", v);
+console.log("WRITTEN:", w);
+await p.$disconnect();

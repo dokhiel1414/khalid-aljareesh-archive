@@ -1,0 +1,97 @@
+// Prisma schema for the Sheikh Khalid bin Ali Al-Jaresh archive.
+// Works with Vercel Postgres / Supabase / Neon / any Postgres.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Category {
+  AUDIO
+  VIDEO
+  WRITTEN
+}
+
+model Item {
+  id          String    @id @default(cuid())
+  title       String
+  description String?   @db.Text
+  /// Inline article body (HTML). When set, the detail page renders it
+  /// directly as a readable article; driveLink remains optional alongside.
+  content     String?   @db.Text
+  category    Category
+  driveLink   String?   @map("drive_link")
+  driveFileId String?   @map("drive_file_id")
+  thumbnail   String?
+  publishedAt DateTime  @default(now()) @map("published_at")
+  viewCount   Int       @default(0)   @map("view_count")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt     @map("updated_at")
+
+  @@index([category])
+  @@index([publishedAt])
+  @@index([title])
+  @@map("items")
+}
+
+// Single-row counter for total site visits. Always id=1.
+model SiteStats {
+  id        Int      @id @default(1)
+  visits    Int      @default(0)
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_stats")
+}
+
+// Single-row global site settings. Always id=1.
+// `theme` selects the active visual theme: "classic" | "ocean".
+model SiteSetting {
+  id        Int      @id @default(1)
+  theme     String   @default("classic")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_settings")
+}
+
+/// Tombstone for items deleted via the dashboard.
+/// When the user deletes an item whose driveFileId is known, we record that
+/// file id here so the bulk import scripts never re-add the same file.
+model DeletedDriveItem {
+  driveFileId String   @id @map("drive_file_id")
+  title       String?  // last-known title (for the admin's reference)
+  category    String?  // last-known category (AUDIO / VIDEO / WRITTEN)
+  deletedAt   DateTime @default(now()) @map("deleted_at")
+
+  @@map("deleted_drive_items")
+}
+
+/// Stores a single row per (visitor-hash, day) pair so the visit counter
+/// reflects true unique daily visitors instead of raw page hits / tab opens.
+model UniqueVisit {
+  id        Int      @id @default(autoincrement())
+  ipHash    String   @map("ip_hash")
+  dayKey    String   @map("day_key")  // YYYY-MM-DD UTC
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([ipHash, dayKey])
+  @@index([dayKey])
+  @@map("unique_visits")
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  subject   String?
+  message   String   @db.Text
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@map("contact_messages")
+}

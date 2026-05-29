@@ -76,6 +76,7 @@ export async function POST(req: Request) {
   }
 
   const driveFileId = extractDriveFileId(driveLink);
+  const topics = parseTopics(body.topics);
 
   const item = await prisma.item.create({
     data: {
@@ -87,10 +88,46 @@ export async function POST(req: Request) {
       driveFileId,
       thumbnail,
       publishedAt,
+      ...(topics.length
+        ? {
+            topics: {
+              create: topics.map((t) => ({
+                topicId: t.topicId,
+                episodeOrder: t.episodeOrder,
+              })),
+            },
+          }
+        : {}),
     },
   });
 
   return NextResponse.json({ item }, { status: 201 });
+}
+
+/** Normalise the topics payload: accepts string[] or {topicId, episodeOrder}[]. */
+export function parseTopics(
+  raw: unknown,
+): { topicId: string; episodeOrder: number | null }[] {
+  if (!Array.isArray(raw)) return [];
+  const out: { topicId: string; episodeOrder: number | null }[] = [];
+  const seen = new Set<string>();
+  for (const entry of raw) {
+    let topicId = "";
+    let episodeOrder: number | null = null;
+    if (typeof entry === "string") {
+      topicId = entry;
+    } else if (entry && typeof entry === "object") {
+      const e = entry as Record<string, unknown>;
+      topicId = typeof e.topicId === "string" ? e.topicId : "";
+      if (e.episodeOrder != null && Number.isFinite(Number(e.episodeOrder))) {
+        episodeOrder = Number(e.episodeOrder);
+      }
+    }
+    if (!topicId || seen.has(topicId)) continue;
+    seen.add(topicId);
+    out.push({ topicId, episodeOrder });
+  }
+  return out;
 }
 
 /**

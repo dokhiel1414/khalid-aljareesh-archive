@@ -17,6 +17,14 @@ enum Category {
   WRITTEN
 }
 
+/// Distinguishes a free-form thematic topic (THEME, e.g. "رمضان") from an
+/// ordered program/series (PROGRAM, e.g. "توجيهات أسرية") whose items are
+/// episodes with an explicit order.
+enum TopicType {
+  THEME
+  PROGRAM
+}
+
 model Item {
   id          String    @id @default(cuid())
   title       String
@@ -33,10 +41,47 @@ model Item {
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt     @map("updated_at")
 
+  topics      ItemTopic[]
+
   @@index([category])
   @@index([publishedAt])
   @@index([title])
   @@map("items")
+}
+
+/// A topic or program that groups items across media types (audio/video/
+/// written). Browsed publicly at /topic/[slug].
+model Topic {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?   @db.Text
+  type        TopicType @default(THEME)
+  coverImage  String?   @map("cover_image")
+  /// Sort order in topic listings (lower first).
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt      @map("updated_at")
+
+  items       ItemTopic[]
+
+  @@index([type])
+  @@map("topics")
+}
+
+/// Join table (many-to-many) between Item and Topic. `episodeOrder` is used
+/// only for PROGRAM topics to order episodes.
+model ItemTopic {
+  itemId       String @map("item_id")
+  topicId      String @map("topic_id")
+  episodeOrder Int?   @map("episode_order")
+
+  item  Item  @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  topic Topic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([itemId, topicId])
+  @@index([topicId])
+  @@map("item_topics")
 }
 
 // Single-row counter for total site visits. Always id=1.

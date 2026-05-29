@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import Hero from "@/components/Hero";
 import CategoryGrid from "@/components/CategoryGrid";
+import TopicsShowcase from "@/components/TopicsShowcase";
 import ItemCard from "@/components/ItemCard";
 import EmptyState from "@/components/EmptyState";
 import { prisma } from "@/lib/prisma";
@@ -27,6 +28,7 @@ export default async function HomePage() {
     <>
       <Hero />
       <CategoryGrid />
+      <TopicsShowcase />
 
       <section className="container pb-20">
         <div className="flex items-end justify-between gap-4 mb-6">

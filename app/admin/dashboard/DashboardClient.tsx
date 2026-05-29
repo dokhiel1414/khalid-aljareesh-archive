@@ -19,12 +19,31 @@ import {
   Mail,
   CheckCircle2,
   Circle,
+  Layers,
+  ListOrdered,
 } from "lucide-react";
-import { CATEGORY_LABEL, formatArabicDate, toArabicDigits } from "@/lib/utils";
+import {
+  CATEGORY_LABEL,
+  TOPIC_TYPE_LABEL,
+  formatArabicDate,
+  toArabicDigits,
+} from "@/lib/utils";
 import RichTextEditor from "@/components/RichTextEditor";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 type Category = "AUDIO" | "VIDEO" | "WRITTEN";
+type TopicType = "THEME" | "PROGRAM";
+type ItemTopicRef = { topicId: string; episodeOrder: number | null };
+type Topic = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  type: TopicType;
+  coverImage: string | null;
+  order: number;
+  _count: { items: number };
+};
 type Item = {
   id: string;
   title: string;
@@ -38,6 +57,7 @@ type Item = {
   viewCount: number;
   createdAt: string;
   updatedAt: string;
+  topics: ItemTopicRef[];
 };
 type Message = {
   id: string;
@@ -64,12 +84,14 @@ const emptyForm = {
 export default function DashboardClient({
   initialItems,
   initialMessages,
+  initialTopics,
   totalVisits,
   theme,
   dbError,
 }: {
   initialItems: Item[];
   initialMessages: Message[];
+  initialTopics: Topic[];
   totalVisits: number;
   theme: "classic" | "ocean";
   dbError: string | null;
@@ -77,7 +99,9 @@ export default function DashboardClient({
   const router = useRouter();
   const [items, setItems] = useState<Item[]>(initialItems);
   const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [topics, setTopics] = useState<Topic[]>(initialTopics);
   const [form, setForm] = useState(emptyForm);
+  const [formTopics, setFormTopics] = useState<ItemTopicRef[]>([]);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
   const [editing, setEditing] = useState<Item | null>(null);
@@ -126,15 +150,20 @@ export default function DashboardClient({
       const r = await fetch("/api/items", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, publishedAt: form.publishedAt || null }),
+        body: JSON.stringify({
+          ...form,
+          publishedAt: form.publishedAt || null,
+          topics: formTopics,
+        }),
       });
       const data = await r.json().catch(() => ({}));
       if (!r.ok) {
         setMsg({ kind: "err", text: data.error || "فشل الحفظ." });
         return;
       }
-      setItems((prev) => [data.item, ...prev]);
+      setItems((prev) => [{ ...data.item, topics: formTopics }, ...prev]);
       setForm(emptyForm);
+      setFormTopics([]);
       setMsg({ kind: "ok", text: "تمت الإضافة بنجاح." });
       router.refresh();
     } catch {
@@ -291,6 +320,17 @@ export default function DashboardClient({
             />
           </Field>
 
+          <Field
+            label="المواضيع والبرامج"
+            hint="اختر موضوعاً أو أكثر. للبرامج يمكنك تحديد رقم الحلقة."
+          >
+            <TopicSelector
+              topics={topics}
+              value={formTopics}
+              onChange={setFormTopics}
+            />
+          </Field>
+
           {msg && (
             <div
               className={
@@ -364,6 +404,32 @@ export default function DashboardClient({
                           </a>
                         )}
                       </div>
+                      {it.topics.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {it.topics.map((ref) => {
+                            const t = topics.find((x) => x.id === ref.topicId);
+                            if (!t) return null;
+                            return (
+                              <span
+                                key={ref.topicId}
+                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-sand text-ink/80 border border-ink/10"
+                              >
+                                {t.type === "PROGRAM" ? (
+                                  <ListOrdered className="h-3 w-3 text-brown" />
+                                ) : (
+                                  <Layers className="h-3 w-3 text-brown" />
+                                )}
+                                {t.name}
+                                {t.type === "PROGRAM" && ref.episodeOrder != null && (
+                                  <span className="text-muted">
+                                    · {toArabicDigits(ref.episodeOrder)}
+                                  </span>
+                                )}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center gap-1">
                       <button
@@ -390,6 +456,13 @@ export default function DashboardClient({
           )}
         </div>
       </div>
+
+      {/* Topics & programs management */}
+      <TopicsManager
+        topics={topics}
+        setTopics={setTopics}
+        onChanged={() => router.refresh()}
+      />
 
       {/* Contact messages */}
       <section className="mt-10">
@@ -476,6 +549,7 @@ export default function DashboardClient({
       {editing && (
         <EditModal
           item={editing}
+          topics={topics}
           onClose={() => setEditing(null)}
           onSaved={handleSaveEdit}
         />
@@ -545,10 +619,12 @@ function toDateInput(iso: string) {
 
 function EditModal({
   item,
+  topics,
   onClose,
   onSaved,
 }: {
   item: Item;
+  topics: Topic[];
   onClose: () => void;
   onSaved: (item: Item) => void;
 }) {
@@ -561,6 +637,7 @@ function EditModal({
     thumbnail: item.thumbnail ?? "",
     publishedAt: toDateInput(item.publishedAt),
   });
+  const [itemTopics, setItemTopics] = useState<ItemTopicRef[]>(item.topics ?? []);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -583,6 +660,7 @@ function EditModal({
         body: JSON.stringify({
           ...form,
           publishedAt: form.publishedAt || null,
+          topics: itemTopics,
         }),
       });
       const data = await r.json().catch(() => ({}));
@@ -590,7 +668,7 @@ function EditModal({
         setErr(data.error || "فشل الحفظ.");
         return;
       }
-      onSaved(data.item);
+      onSaved({ ...data.item, topics: itemTopics });
     } catch {
       setErr("تعذّر الاتصال بالخادم.");
     } finally {
@@ -689,6 +767,17 @@ function EditModal({
             />
           </Field>
 
+          <Field
+            label="المواضيع والبرامج"
+            hint="اختر موضوعاً أو أكثر. للبرامج يمكنك تحديد رقم الحلقة."
+          >
+            <TopicSelector
+              topics={topics}
+              value={itemTopics}
+              onChange={setItemTopics}
+            />
+          </Field>
+
           {err && (
             <div className="text-sm rounded-lg px-3 py-2 bg-red-50 border border-red-100 text-red-700">
               {err}
@@ -707,5 +796,426 @@ function EditModal({
         </div>
       </form>
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Topic selector — used in both the add form and the edit modal.     */
+/* ------------------------------------------------------------------ */
+function TopicSelector({
+  topics,
+  value,
+  onChange,
+}: {
+  topics: Topic[];
+  value: ItemTopicRef[];
+  onChange: (next: ItemTopicRef[]) => void;
+}) {
+  if (topics.length === 0) {
+    return (
+      <p className="text-xs text-ink/50">
+        لا توجد مواضيع بعد. أضِف موضوعاً أو برنامجاً من قسم «المواضيع والبرامج» في الأسفل.
+      </p>
+    );
+  }
+
+  function toggle(id: string) {
+    const exists = value.some((v) => v.topicId === id);
+    if (exists) {
+      onChange(value.filter((v) => v.topicId !== id));
+    } else {
+      onChange([...value, { topicId: id, episodeOrder: null }]);
+    }
+  }
+
+  function setOrder(id: string, order: number | null) {
+    onChange(
+      value.map((v) => (v.topicId === id ? { ...v, episodeOrder: order } : v)),
+    );
+  }
+
+  return (
+    <div className="space-y-1.5 max-h-56 overflow-y-auto rounded-xl border border-ink/10 p-2">
+      {topics.map((t) => {
+        const selected = value.find((v) => v.topicId === t.id);
+        const isProgram = t.type === "PROGRAM";
+        return (
+          <div
+            key={t.id}
+            className={
+              "flex items-center gap-2 rounded-lg px-2 py-1.5 " +
+              (selected ? "bg-sand" : "hover:bg-ink/5")
+            }
+          >
+            <label className="flex items-center gap-2 flex-1 cursor-pointer text-sm">
+              <input
+                type="checkbox"
+                checked={!!selected}
+                onChange={() => toggle(t.id)}
+                className="h-4 w-4 accent-brown"
+              />
+              {isProgram ? (
+                <ListOrdered className="h-3.5 w-3.5 text-brown" />
+              ) : (
+                <Layers className="h-3.5 w-3.5 text-brown" />
+              )}
+              <span className="text-ink">{t.name}</span>
+              <span className="text-[11px] text-muted">
+                {TOPIC_TYPE_LABEL[t.type]}
+              </span>
+            </label>
+            {selected && isProgram && (
+              <input
+                type="number"
+                min={1}
+                value={selected.episodeOrder ?? ""}
+                onChange={(e) =>
+                  setOrder(
+                    t.id,
+                    e.target.value === "" ? null : Number(e.target.value),
+                  )
+                }
+                placeholder="الحلقة"
+                className="input w-24 py-1 text-sm"
+                title="رقم الحلقة"
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Topics & programs manager — create / edit / delete topics.         */
+/* ------------------------------------------------------------------ */
+const emptyTopicForm = {
+  name: "",
+  type: "THEME" as TopicType,
+  description: "",
+  order: "",
+};
+
+function TopicsManager({
+  topics,
+  setTopics,
+  onChanged,
+}: {
+  topics: Topic[];
+  setTopics: React.Dispatch<React.SetStateAction<Topic[]>>;
+  onChanged: () => void;
+}) {
+  const [form, setForm] = useState(emptyTopicForm);
+  const [saving, setSaving] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function addTopic(e: React.FormEvent) {
+    e.preventDefault();
+    setErr(null);
+    if (!form.name.trim()) {
+      setErr("اسم الموضوع مطلوب.");
+      return;
+    }
+    setSaving(true);
+    try {
+      const r = await fetch("/api/topics", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          type: form.type,
+          description: form.description,
+          order: form.order === "" ? 0 : Number(form.order),
+        }),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        setErr(data.error || "تعذّر الإنشاء.");
+        return;
+      }
+      setTopics((prev) =>
+        [...prev, { ...data.topic, _count: { items: 0 } }].sort(
+          (a, b) => a.order - b.order || a.name.localeCompare(b.name, "ar"),
+        ),
+      );
+      setForm(emptyTopicForm);
+      onChanged();
+    } catch {
+      setErr("تعذّر الاتصال بالخادم.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function removeTopic(t: Topic) {
+    if (
+      !confirm(
+        `حذف «${t.name}»؟ لن تُحذف العناصر، لكن سيُزال هذا الموضوع عنها.`,
+      )
+    )
+      return;
+    const r = await fetch(`/api/topics/${t.id}`, { method: "DELETE" });
+    if (r.ok) {
+      setTopics((prev) => prev.filter((x) => x.id !== t.id));
+      onChanged();
+    } else {
+      alert("تعذّر الحذف.");
+    }
+  }
+
+  function applyUpdate(updated: Topic) {
+    setTopics((prev) =>
+      prev
+        .map((x) => (x.id === updated.id ? { ...updated, _count: x._count } : x))
+        .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name, "ar")),
+    );
+    onChanged();
+  }
+
+  return (
+    <section className="mt-10">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-display font-bold text-ink dark:text-sand flex items-center gap-2">
+          <Layers className="h-5 w-5 text-gold" />
+          المواضيع والبرامج
+        </h2>
+        <span className="chip">{toArabicDigits(topics.length)} موضوع/برنامج</span>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-5">
+        <form
+          onSubmit={addTopic}
+          className="lg:col-span-2 bg-white rounded-2xl border border-ink/10 shadow-soft p-5 space-y-3 h-fit"
+        >
+          <div className="flex items-center gap-2">
+            <Plus className="h-4 w-4 text-gold" />
+            <h3 className="font-display font-bold text-ink text-sm">
+              إضافة موضوع / برنامج
+            </h3>
+          </div>
+          <Field label="الاسم *">
+            <input
+              value={form.name}
+              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+              className="input"
+              placeholder="مثال: رمضان · توجيهات أسرية"
+            />
+          </Field>
+          <Field label="النوع *">
+            <select
+              value={form.type}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, type: e.target.value as TopicType }))
+              }
+              className="input"
+            >
+              <option value="THEME">موضوع</option>
+              <option value="PROGRAM">برنامج / سلسلة مرتّبة</option>
+            </select>
+          </Field>
+          <Field label="الوصف">
+            <textarea
+              value={form.description}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, description: e.target.value }))
+              }
+              className="input min-h-[60px]"
+              placeholder="وصف مختصر (اختياري)…"
+            />
+          </Field>
+          <Field label="ترتيب العرض" hint="الأصغر يظهر أولاً (اختياري).">
+            <input
+              type="number"
+              value={form.order}
+              onChange={(e) => setForm((f) => ({ ...f, order: e.target.value }))}
+              className="input"
+              placeholder="0"
+            />
+          </Field>
+          {err && (
+            <div className="text-sm rounded-lg px-3 py-2 bg-red-50 border border-red-100 text-red-700">
+              {err}
+            </div>
+          )}
+          <button type="submit" disabled={saving} className="btn-primary w-full">
+            {saving ? "جاري الحفظ…" : "إضافة"}
+          </button>
+        </form>
+
+        <div className="lg:col-span-3">
+          {topics.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-ink/15 bg-white p-8 text-center text-ink/60">
+              لا توجد مواضيع بعد. أضِف أول موضوع أو برنامج من النموذج.
+            </div>
+          ) : (
+            <ul className="space-y-2.5">
+              {topics.map((t) => (
+                <TopicRow
+                  key={t.id}
+                  topic={t}
+                  onDelete={() => removeTopic(t)}
+                  onUpdated={applyUpdate}
+                />
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TopicRow({
+  topic,
+  onDelete,
+  onUpdated,
+}: {
+  topic: Topic;
+  onDelete: () => void;
+  onUpdated: (t: Topic) => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState({
+    name: topic.name,
+    type: topic.type,
+    description: topic.description ?? "",
+    order: String(topic.order ?? 0),
+  });
+  const [saving, setSaving] = useState(false);
+
+  async function save() {
+    setSaving(true);
+    try {
+      const r = await fetch(`/api/topics/${topic.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          type: form.type,
+          description: form.description,
+          order: form.order === "" ? 0 : Number(form.order),
+        }),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        alert(data.error || "تعذّر الحفظ.");
+        return;
+      }
+      onUpdated(data.topic);
+      setEditing(false);
+    } catch {
+      alert("تعذّر الاتصال بالخادم.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const isProgram = topic.type === "PROGRAM";
+
+  if (editing) {
+    return (
+      <li className="bg-white border border-gold/40 ring-1 ring-gold/20 rounded-2xl p-4 space-y-2">
+        <input
+          value={form.name}
+          onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+          className="input"
+        />
+        <div className="grid grid-cols-2 gap-2">
+          <select
+            value={form.type}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, type: e.target.value as TopicType }))
+            }
+            className="input"
+          >
+            <option value="THEME">موضوع</option>
+            <option value="PROGRAM">برنامج</option>
+          </select>
+          <input
+            type="number"
+            value={form.order}
+            onChange={(e) => setForm((f) => ({ ...f, order: e.target.value }))}
+            className="input"
+            placeholder="ترتيب"
+          />
+        </div>
+        <textarea
+          value={form.description}
+          onChange={(e) =>
+            setForm((f) => ({ ...f, description: e.target.value }))
+          }
+          className="input min-h-[50px]"
+          placeholder="الوصف"
+        />
+        <div className="flex items-center justify-end gap-2">
+          <button
+            onClick={() => setEditing(false)}
+            className="btn-ghost text-ink hover:bg-ink/5 text-sm"
+          >
+            إلغاء
+          </button>
+          <button
+            onClick={save}
+            disabled={saving}
+            className="btn-primary text-sm"
+          >
+            <Save className="h-4 w-4" />
+            {saving ? "حفظ…" : "حفظ"}
+          </button>
+        </div>
+      </li>
+    );
+  }
+
+  return (
+    <li className="bg-white border border-ink/10 rounded-2xl p-4 flex items-start gap-3 hover:shadow-soft transition">
+      <div className="h-10 w-10 shrink-0 rounded-xl bg-sand grid place-items-center text-brown">
+        {isProgram ? (
+          <ListOrdered className="h-5 w-5" />
+        ) : (
+          <Layers className="h-5 w-5" />
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2 flex-wrap">
+          <a
+            href={`/topic/${encodeURIComponent(topic.slug)}`}
+            target="_blank"
+            rel="noopener"
+            className="font-medium text-ink truncate hover:text-brown"
+          >
+            {topic.name}
+          </a>
+          <span className="chip-gold">{TOPIC_TYPE_LABEL[topic.type]}</span>
+          <span className="text-xs text-muted">
+            {toArabicDigits(topic._count.items)} عنصر
+          </span>
+        </div>
+        {topic.description && (
+          <p className="text-sm text-ink/60 mt-1 line-clamp-2">
+            {topic.description}
+          </p>
+        )}
+      </div>
+      <div className="flex items-center gap-1">
+        <button
+          onClick={() => setEditing(true)}
+          className="btn-ghost text-ink hover:bg-ink/5 px-2 h-9"
+          aria-label="تعديل"
+          title="تعديل"
+        >
+          <Pencil className="h-4 w-4" />
+        </button>
+        <button
+          onClick={onDelete}
+          className="btn-ghost text-red-600 hover:bg-red-50 px-2 h-9"
+          aria-label="حذف"
+          title="حذف"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
+      </div>
+    </li>
   );
 }

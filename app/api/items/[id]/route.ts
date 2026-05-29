@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "@/lib/auth";
 import { extractDriveFileId } from "@/lib/drive";
 import { loadDevItems } from "@/lib/dev-data";
+import { parseTopics } from "../route";
 
 export const runtime = "nodejs";
 
@@ -12,7 +13,10 @@ export async function GET(
   _req: Request,
   { params }: { params: { id: string } },
 ) {
-  const item = await prisma.item.findUnique({ where: { id: params.id } });
+  const item = await prisma.item.findUnique({
+    where: { id: params.id },
+    include: { topics: { select: { topicId: true, episodeOrder: true } } },
+  });
   if (item) return NextResponse.json({ item });
   const dev = await loadDevItems();
   const devItem = dev.find((i) => i.id === params.id);
@@ -88,6 +92,26 @@ export async function PUT(
   }
 
   try {
+    // If `topics` was provided, replace the item's topic assignments.
+    if ("topics" in body) {
+      const topics = parseTopics(body.topics);
+      await prisma.$transaction([
+        prisma.itemTopic.deleteMany({ where: { itemId: params.id } }),
+        ...(topics.length
+          ? [
+              prisma.itemTopic.createMany({
+                data: topics.map((t) => ({
+                  itemId: params.id,
+                  topicId: t.topicId,
+                  episodeOrder: t.episodeOrder,
+                })),
+                skipDuplicates: true,
+              }),
+            ]
+          : []),
+      ]);
+    }
+
     const item = await prisma.item.update({
       where: { id: params.id },
       data,

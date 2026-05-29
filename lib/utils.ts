@@ -43,6 +43,28 @@ export const CATEGORY_LABEL: Record<"AUDIO" | "VIDEO" | "WRITTEN", string> = {
   WRITTEN: "مقالات وكتب",
 };
 
+export const TOPIC_TYPE_LABEL: Record<"THEME" | "PROGRAM", string> = {
+  THEME: "موضوع",
+  PROGRAM: "برنامج",
+};
+
+/**
+ * Build a URL-friendly slug from a (possibly Arabic) name. Keeps Arabic
+ * letters and latin alphanumerics, turns whitespace/separators into a single
+ * hyphen, and strips other punctuation. Arabic slugs are valid in URLs
+ * (they get percent-encoded by the browser).
+ */
+export function slugify(input: string): string {
+  return (input || "")
+    .trim()
+    .replace(/[ـ]/g, "") // strip tatweel
+    .replace(/['"“”‘’.,،؛:!؟?()\[\]{}/\\|@#$%^&*+=~`]/g, "")
+    .replace(/[\s_]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .toLowerCase();
+}
+
 const AR_DIGITS = "٠١٢٣٤٥٦٧٨٩";
 /** Convert any latin digits in a string to Arabic-Indic digits. */
 export function toArabicDigits(input: string | number): string {

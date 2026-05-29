@@ -18,7 +18,7 @@ const tiles = [
   },
   {
     href: "/written",
-    title: "المقالات والكتب",
+    title: "المقالات",
     desc: "كتب ومقالات للقراءة أو التحميل بصيغة PDF.",
     icon: BookOpen,
     accent: "from-ink to-brown",

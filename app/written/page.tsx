@@ -5,7 +5,7 @@ import SearchBar from "@/components/SearchBar";
 import { prisma } from "@/lib/prisma";
 
 export const revalidate = 60;
-export const metadata = { title: "المقالات والكتب" };
+export const metadata = { title: "المقالات" };
 
 async function getItems() {
   try {
@@ -23,8 +23,8 @@ export default async function WrittenPage() {
   return (
     <>
       <SectionHeader
-        title="المقالات والكتب"
-        description="كتب ومقالات للقراءة المباشرة أو التحميل."
+        title="المقالات"
+        description="مقالات للقراءة المباشرة أو التحميل."
         icon={BookOpen}
       />
       <section className="container py-10">

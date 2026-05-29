@@ -87,7 +87,7 @@ export default function SearchBar({ variant = "default", compact = false }: Prop
               <option value="ALL">جميع الفئات</option>
               <option value="AUDIO">صوتيات</option>
               <option value="VIDEO">مرئيات</option>
-              <option value="WRITTEN">مقالات وكتب</option>
+              <option value="WRITTEN">مقالات</option>
             </select>
           </div>
           <div>

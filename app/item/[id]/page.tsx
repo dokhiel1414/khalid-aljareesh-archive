@@ -24,7 +24,7 @@ const ICONS = { AUDIO: Headphones, VIDEO: Video, WRITTEN: BookOpen };
 const BACK_LINKS = {
   AUDIO: { href: "/audio", label: "كل الصوتيات" },
   VIDEO: { href: "/video", label: "كل المرئيات" },
-  WRITTEN: { href: "/written", label: "كل المقالات والكتب" },
+  WRITTEN: { href: "/written", label: "كل المقالات" },
 };
 const DOWNLOAD_LABEL = {
   AUDIO: "تحميل الصوت",

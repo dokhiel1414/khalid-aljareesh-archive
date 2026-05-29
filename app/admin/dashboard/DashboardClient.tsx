@@ -259,7 +259,7 @@ export default function DashboardClient({
             >
               <option value="AUDIO">صوتيات</option>
               <option value="VIDEO">مرئيات</option>
-              <option value="WRITTEN">مقالات وكتب</option>
+              <option value="WRITTEN">مقالات</option>
             </select>
           </Field>
 
@@ -719,7 +719,7 @@ function EditModal({
             >
               <option value="AUDIO">صوتيات</option>
               <option value="VIDEO">مرئيات</option>
-              <option value="WRITTEN">مقالات وكتب</option>
+              <option value="WRITTEN">مقالات</option>
             </select>
           </Field>
 

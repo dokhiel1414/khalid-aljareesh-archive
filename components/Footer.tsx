@@ -23,7 +23,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm text-sand/80">
             <li><Link href="/audio" className="hover:text-gold">الصوتيات</Link></li>
             <li><Link href="/video" className="hover:text-gold">المرئيات</Link></li>
-            <li><Link href="/written" className="hover:text-gold">المقالات والكتب</Link></li>
+            <li><Link href="/written" className="hover:text-gold">المقالات</Link></li>
             <li><Link href="/topics" className="hover:text-gold">المواضيع والبرامج</Link></li>
             <li><Link href="/search" className="hover:text-gold">بحث</Link></li>
             <li><Link href="/contact" className="hover:text-gold">تواصل معنا</Link></li>

@@ -40,7 +40,7 @@ export const formatArabicDate = formatHijriDate;
 export const CATEGORY_LABEL: Record<"AUDIO" | "VIDEO" | "WRITTEN", string> = {
   AUDIO: "صوتيات",
   VIDEO: "مرئيات",
-  WRITTEN: "مقالات وكتب",
+  WRITTEN: "مقالات",
 };
 
 export const TOPIC_TYPE_LABEL: Record<"THEME" | "PROGRAM", string> = {

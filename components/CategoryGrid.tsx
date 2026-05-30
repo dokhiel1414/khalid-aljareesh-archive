@@ -45,8 +45,8 @@ export default function CategoryGrid() {
           >
             <div className="absolute inset-0 arabesque opacity-[0.08]" aria-hidden />
             <div className="relative flex items-start justify-between">
-              <div className="h-12 w-12 rounded-xl bg-white/10 grid place-items-center">
-                <t.icon className="h-6 w-6 text-gold" />
+              <div className="h-12 w-12 rounded-xl bg-sand grid place-items-center shadow-card border border-gold/40">
+                <t.icon className="h-6 w-6 text-ink" strokeWidth={2.25} />
               </div>
               <ArrowLeft className="h-5 w-5 opacity-60 group-hover:translate-x-[-4px] transition" />
             </div>

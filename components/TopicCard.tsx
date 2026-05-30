@@ -31,8 +31,8 @@ export default function TopicCard({ topic }: { topic: Topic }) {
       )}
       <div className="absolute inset-0 arabesque opacity-[0.08]" aria-hidden />
       <div className="relative flex items-start justify-between">
-        <div className="h-12 w-12 rounded-xl bg-white/10 grid place-items-center">
-          <Icon className="h-6 w-6 text-gold" />
+        <div className="h-12 w-12 rounded-xl bg-sand grid place-items-center shadow-card border border-gold/40">
+          <Icon className="h-6 w-6 text-ink" strokeWidth={2.25} />
         </div>
         <span className="chip bg-white/10 text-sand border border-white/15">
           {isProgram ? "برنامج" : "موضوع"}

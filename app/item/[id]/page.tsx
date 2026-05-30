@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -17,6 +18,13 @@ import CopyLinkButton from "@/components/CopyLinkButton";
 import ItemViewTracker from "@/components/ItemViewTracker";
 import { CATEGORY_LABEL, formatArabicDate, toArabicDigits } from "@/lib/utils";
 import { driveDownloadUrl } from "@/lib/drive";
+import { itemJsonLd, breadcrumbJsonLd, jsonLdScript } from "@/lib/seo";
+
+const SECTION = {
+  AUDIO: { name: "الصوتيات", path: "/audio" },
+  VIDEO: { name: "المرئيات", path: "/video" },
+  WRITTEN: { name: "المقالات", path: "/written" },
+};
 
 export const dynamic = "force-dynamic";
 
@@ -73,12 +81,34 @@ async function getProgramNav(topicId: string, currentItemId: string) {
   }
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
   const item = await getItem(params.id);
-  if (!item) return { title: "العنصر غير موجود" };
+  if (!item) return { title: "العنصر غير موجود", robots: { index: false, follow: false } };
+  const description =
+    item.description ||
+    `${CATEGORY_LABEL[item.category]} للشيخ خالد بن علي الجريش: ${item.title}`;
+  const url = `/item/${item.id}`;
   return {
     title: item.title,
-    description: item.description || `${CATEGORY_LABEL[item.category]} للشيخ خالد بن علي الجريش`,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type:
+        item.category === "WRITTEN"
+          ? "article"
+          : item.category === "VIDEO"
+            ? "video.other"
+            : "music.song",
+      title: item.title,
+      description,
+      url,
+      ...(item.thumbnail ? { images: [{ url: item.thumbnail }] } : {}),
+    },
+    twitter: { card: "summary_large_image", title: item.title, description },
   };
 }
 
@@ -100,8 +130,25 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
   // Drive iframe is only shown when there's a file AND no article body.
   const showMediaEmbed = !!driveId && !(item.category === "WRITTEN" && hasArticleBody);
 
+  const section = SECTION[item.category];
+  const itemLd = itemJsonLd(item, downloadUrl);
+  const crumbsLd = breadcrumbJsonLd([
+    { name: "الرئيسية", path: "/" },
+    { name: section.name, path: section.path },
+    { name: item.title, path: `/item/${item.id}` },
+  ]);
+
   return (
-    <article className="container py-8 md:py-12">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(itemLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbsLd) }}
+      />
+      <article className="container py-8 md:py-12">
       <div className="mb-6 flex items-center justify-between gap-4 flex-wrap">
         <Link
           href={back.href}
@@ -264,6 +311,7 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
           </div>
         </nav>
       )}
-    </article>
+      </article>
+    </>
   );
 }

@@ -3,24 +3,55 @@ import type { Metadata, Viewport } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { getActiveTheme } from "@/lib/theme";
+import { SITE_URL, SITE_NAME } from "@/lib/site";
+import { websiteJsonLd, organizationJsonLd, jsonLdScript } from "@/lib/seo";
 
 // Read the admin-selected theme on every request so a theme switch in the
 // dashboard takes effect site-wide.
 export const dynamic = "force-dynamic";
 
+const DESCRIPTION =
+  "أرشيف رقمي يجمع الصوتيات والمرئيات والمقالات للشيخ خالد بن علي الجريش للاستماع والمشاهدة والقراءة المباشرة.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "أرشيف الشيخ خالد بن علي الجريش",
-    template: "%s · أرشيف الشيخ خالد بن علي الجريش",
+    default: SITE_NAME,
+    template: `%s · ${SITE_NAME}`,
   },
-  description:
-    "أرشيف رقمي يجمع الصوتيات والمرئيات والمقالات للشيخ خالد بن علي الجريش للاستماع والمشاهدة والقراءة المباشرة.",
+  description: DESCRIPTION,
+  applicationName: SITE_NAME,
+  authors: [{ name: "الشيخ خالد بن علي الجريش" }],
+  keywords: [
+    "خالد الجريش",
+    "الشيخ خالد بن علي الجريش",
+    "محاضرات",
+    "دروس",
+    "خطب",
+    "مقالات",
+    "صوتيات",
+    "مرئيات",
+    "أرشيف إسلامي",
+    "توجيهات أسرية",
+  ],
+  alternates: { canonical: "/" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  },
   openGraph: {
     type: "website",
     locale: "ar_SA",
-    title: "أرشيف الشيخ خالد بن علي الجريش",
-    description:
-      "محاضرات ودروس ومقالات في مكان واحد.",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_NAME,
+    description: DESCRIPTION,
   },
 };
 
@@ -60,6 +91,15 @@ export default async function RootLayout({
           rel="stylesheet"
         />
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+        {/* Structured data: WebSite (search box) + Organization */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(websiteJsonLd()) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(organizationJsonLd()) }}
+        />
       </head>
       <body className="min-h-screen flex flex-col font-sans">
         <Navbar />

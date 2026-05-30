@@ -5,7 +5,16 @@ import SearchBar from "@/components/SearchBar";
 import { prisma } from "@/lib/prisma";
 
 export const revalidate = 60;
-export const metadata = { title: "المرئيات" };
+export const metadata = {
+  title: "المرئيات",
+  description: "مرئيات وحلقات مختارة للشيخ خالد بن علي الجريش — للمشاهدة المباشرة.",
+  alternates: { canonical: "/video" },
+  openGraph: {
+    title: "المرئيات · أرشيف الشيخ خالد بن علي الجريش",
+    description: "مرئيات وحلقات مختارة للشيخ خالد بن علي الجريش.",
+    url: "/video",
+  },
+};
 
 async function getItems() {
   try {

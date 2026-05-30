@@ -5,7 +5,16 @@ import SearchBar from "@/components/SearchBar";
 import { prisma } from "@/lib/prisma";
 
 export const revalidate = 60;
-export const metadata = { title: "الصوتيات" };
+export const metadata = {
+  title: "الصوتيات",
+  description: "محاضرات ودروس صوتية للشيخ خالد بن علي الجريش — للاستماع المباشر والتحميل.",
+  alternates: { canonical: "/audio" },
+  openGraph: {
+    title: "الصوتيات · أرشيف الشيخ خالد بن علي الجريش",
+    description: "محاضرات ودروس صوتية للشيخ خالد بن علي الجريش.",
+    url: "/audio",
+  },
+};
 
 async function getItems() {
   try {

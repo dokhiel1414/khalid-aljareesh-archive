@@ -6,7 +6,11 @@ import ItemGrid from "@/components/ItemGrid";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "بحث" };
+export const metadata = {
+  title: "بحث",
+  description: "ابحث في أرشيف الشيخ خالد بن علي الجريش: صوتيات ومرئيات ومقالات.",
+  robots: { index: false, follow: true },
+};
 
 type SP = {
   q?: string;

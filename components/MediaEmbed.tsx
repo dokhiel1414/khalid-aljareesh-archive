@@ -1,5 +1,5 @@
 import { drivePreviewUrl, extractDriveFileId } from "@/lib/drive";
-import CustomAudioPlayer from "./CustomAudioPlayer";
+import LecturePlayCard from "./LecturePlayCard";
 import CustomVideoPlayer from "./CustomVideoPlayer";
 
 type Props = {
@@ -14,7 +14,7 @@ export default function MediaEmbed({ driveLink, driveFileId, kind, title }: Prop
   if (!id) return null;
 
   if (kind === "AUDIO") {
-    return <CustomAudioPlayer driveFileId={id} title={title} />;
+    return <LecturePlayCard driveFileId={id} title={title} />;
   }
 
   if (kind === "VIDEO") {

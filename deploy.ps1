@@ -14,8 +14,13 @@ function Write-Step($num, $total, $text) {
 function Write-Ok($text)   { Write-Host "  + $text" -ForegroundColor Green }
 function Write-Info($text) { Write-Host "  i $text" -ForegroundColor Yellow }
 
-# مفتاح JWT تم توليده مسبقاً (بإمكانك استخدامه كما هو)
-$AuthSecret = "TtTZEHPzwVDVld8RXp1E6RHoqR+x7gA3lPIhn837c19WCD2tteE8a+Fa6Db4WZqu"
+# مفتاح JWT: يُقرأ من متغيّر البيئة AUTH_SECRET (لا تضع الأسرار في الملفات).
+# للتوليد: openssl rand -base64 48  ثم  $env:AUTH_SECRET = "<القيمة>"
+$AuthSecret = $env:AUTH_SECRET
+if ([string]::IsNullOrWhiteSpace($AuthSecret)) {
+  Write-Host "  ! اضبط متغيّر البيئة AUTH_SECRET قبل التشغيل." -ForegroundColor Red
+  exit 1
+}
 
 Write-Host ""
 Write-Host "============================================================" -ForegroundColor Magenta

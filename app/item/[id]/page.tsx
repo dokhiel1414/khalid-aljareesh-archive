@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import {
   ArrowRight,
   ArrowLeft,
+  ChevronLeft,
   Calendar,
   Headphones,
   Video,
@@ -14,7 +15,9 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import MediaEmbed from "@/components/MediaEmbed";
-import CopyLinkButton from "@/components/CopyLinkButton";
+import ShareButtons from "@/components/ShareButtons";
+import ItemCard from "@/components/ItemCard";
+import { absoluteUrl } from "@/lib/site";
 import ItemViewTracker from "@/components/ItemViewTracker";
 import { CATEGORY_LABEL, formatArabicDate, toArabicDigits } from "@/lib/utils";
 import { driveDownloadUrl } from "@/lib/drive";
@@ -53,6 +56,30 @@ async function getItem(id: string) {
     });
   } catch {
     return null;
+  }
+}
+
+/** Items that share at least one topic with this one (excludes itself). */
+async function getRelated(itemId: string, topicIds: string[]) {
+  if (topicIds.length === 0) return [];
+  try {
+    const rels = await prisma.itemTopic.findMany({
+      where: { topicId: { in: topicIds }, itemId: { not: itemId } },
+      take: 30,
+      orderBy: { item: { publishedAt: "desc" } },
+      include: { item: true },
+    });
+    const seen = new Set<string>();
+    const out: (typeof rels)[number]["item"][] = [];
+    for (const r of rels) {
+      if (seen.has(r.itemId)) continue;
+      seen.add(r.itemId);
+      out.push(r.item);
+      if (out.length >= 6) break;
+    }
+    return out;
+  } catch {
+    return [];
   }
 }
 
@@ -138,6 +165,12 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
     { name: item.title, path: `/item/${item.id}` },
   ]);
 
+  const shareUrl = absoluteUrl(`/item/${item.id}`);
+  const related = await getRelated(
+    item.id,
+    topicRels.map((r) => r.topicId),
+  );
+
   return (
     <>
       <script
@@ -149,7 +182,20 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbsLd) }}
       />
       <article className="container py-8 md:py-12">
-      <div className="mb-6 flex items-center justify-between gap-4 flex-wrap">
+      <nav
+        aria-label="مسار التنقّل"
+        className="mb-4 flex items-center gap-1.5 text-xs text-muted flex-wrap"
+      >
+        <Link href="/" className="hover:text-ink dark:hover:text-sand">الرئيسية</Link>
+        <ChevronLeft className="h-3.5 w-3.5 opacity-60" />
+        <Link href={section.path} className="hover:text-ink dark:hover:text-sand">
+          {section.name}
+        </Link>
+        <ChevronLeft className="h-3.5 w-3.5 opacity-60" />
+        <span className="text-ink/80 dark:text-sand/80 truncate max-w-[55%]">{item.title}</span>
+      </nav>
+
+      <div className="mb-6">
         <Link
           href={back.href}
           className="inline-flex items-center gap-2 text-sm text-muted hover:text-ink dark:hover:text-sand"
@@ -157,7 +203,6 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
           <ArrowRight className="h-4 w-4" />
           {back.label}
         </Link>
-        <CopyLinkButton path={`/item/${item.id}`} variant="gold" label="مشاركة الرابط" />
       </div>
 
       <header className="mb-6">
@@ -204,6 +249,10 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
           </div>
         )}
       </header>
+
+      <div className="mb-6">
+        <ShareButtons url={shareUrl} title={item.title} />
+      </div>
 
       {showMediaEmbed && (
         <div className="mb-6">
@@ -310,6 +359,20 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
             )}
           </div>
         </nav>
+      )}
+
+      {related.length > 0 && (
+        <section className="mt-12 border-t border-ink/10 dark:border-dark-border pt-8">
+          <h2 className="section-title mb-5">مواد ذات صلة</h2>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {related.map((r) => (
+              <ItemCard
+                key={r.id}
+                item={{ ...r, publishedAt: r.publishedAt.toISOString() }}
+              />
+            ))}
+          </div>
+        </section>
       )}
       </article>
     </>

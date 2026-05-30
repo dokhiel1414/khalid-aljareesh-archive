@@ -33,7 +33,7 @@ export default function Footer() {
       </div>
       <div className="border-t border-sand/10">
         <div className="container py-4 text-center text-xs text-sand/60">
-          © {year} جميع الحقوق محفوظة · الشيخ خالد بن علي الجريش
+          {year} · أرشيف الشيخ خالد بن علي الجريش — المحتوى متاح للنشر والاستفادة لكل مسلم
         </div>
       </div>
     </footer>

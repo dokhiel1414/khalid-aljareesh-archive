@@ -1,12 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import DashboardClient from "./DashboardClient";
-import { getActiveTheme } from "@/lib/theme";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "لوحة التحكم" };
 
 export default async function DashboardPage() {
-  const theme = await getActiveTheme();
   let items: {
     id: string;
     title: string;
@@ -72,7 +70,6 @@ export default async function DashboardPage() {
       }))}
       initialTopics={topics}
       totalVisits={totalVisits}
-      theme={theme}
       dbError={dbError}
     />
   );

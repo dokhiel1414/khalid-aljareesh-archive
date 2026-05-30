@@ -1,6 +1,7 @@
 import { Video } from "lucide-react";
 import SectionHeader from "@/components/SectionHeader";
-import ItemGrid from "@/components/ItemGrid";
+import RevealGrid from "@/components/RevealGrid";
+import ItemCard from "@/components/ItemCard";
 import SearchBar from "@/components/SearchBar";
 import { prisma } from "@/lib/prisma";
 
@@ -38,9 +39,11 @@ export default async function VideoPage() {
       />
       <section className="container py-10">
         <div className="mb-6"><SearchBar /></div>
-        <ItemGrid
-          items={items.map((i) => ({ ...i, publishedAt: i.publishedAt.toISOString() }))}
-        />
+        <RevealGrid>
+          {items.map((i) => (
+            <ItemCard key={i.id} item={{ ...i, publishedAt: i.publishedAt.toISOString() }} />
+          ))}
+        </RevealGrid>
       </section>
     </>
   );

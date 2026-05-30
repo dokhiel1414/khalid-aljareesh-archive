@@ -2,12 +2,12 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { getActiveTheme } from "@/lib/theme";
+import AudioPlayerProvider from "@/components/AudioPlayerProvider";
+import PersistentPlayer from "@/components/PersistentPlayer";
+import { Analytics } from "@vercel/analytics/react";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 import { websiteJsonLd, organizationJsonLd, jsonLdScript } from "@/lib/seo";
 
-// Read the admin-selected theme on every request so a theme switch in the
-// dashboard takes effect site-wide.
 export const dynamic = "force-dynamic";
 
 const DESCRIPTION =
@@ -78,23 +78,9 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const theme = await getActiveTheme();
-  const htmlClass = theme === "ocean" ? "theme-ocean" : "theme-classic";
-
   return (
-    <html lang="ar" dir="rtl" className={htmlClass}>
+    <html lang="ar" dir="rtl" className="theme-classic">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        {/* Tajawal is used by the Ocean theme; harmless to load always. */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap"
-          rel="stylesheet"
-        />
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         {/* Structured data: WebSite (search box) + Organization */}
         <script
@@ -107,9 +93,13 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col font-sans">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <AudioPlayerProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <PersistentPlayer />
+        </AudioPlayerProvider>
+        <Analytics />
       </body>
     </html>
   );

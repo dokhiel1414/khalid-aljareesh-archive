@@ -56,8 +56,7 @@
    exposed as CSS variables. Swapping the variable set on <html> switches
    the entire site's palette + UI font.
 
-   Default (:root) = Classic warm palette (Thmanyah serif).
-   .theme-ocean     = Light blue/cyan airy palette (Tajawal).
+   Palette = Classic warm palette (Thmanyah serif), with a dark mode.
    ===================================================================== */
 :root {
   --c-ink: 7 44 73;          /* primary dark / text       #072C49 */
@@ -79,25 +78,6 @@
   --hero-b: var(--c-brown);
   --hero-from: var(--c-ink);
   --hero-to: var(--c-ink-2);
-}
-
-.theme-ocean {
-  --c-ink: 15 27 45;         /* on-surface text           #0F1B2D */
-  --c-gold: 79 156 255;      /* primary blue              #4F9CFF */
-  --c-brown: 62 198 215;     /* secondary cyan            #3EC6D7 */
-  --c-sand: 244 247 252;     /* airy background           #F4F7FC */
-  --c-ink-2: 43 86 140;      /* deeper blue               #2B568C */
-  --c-sand-2: 255 255 255;   /* pure white surface        #FFFFFF */
-  --c-dark-bg: 23 23 21;     /* #171715 */
-  --c-dark-surface: 34 34 32;/* #222220 */
-  --c-dark-card: 39 39 37;   /* #272725 */
-  --c-dark-border: 67 67 66; /* #434342 */
-
-  --font-body: "Tajawal";
-  --font-display-f: "Tajawal";
-
-  --hero-from: 43 86 140;    /* blue gradient hero        #2B568C */
-  --hero-to: 79 156 255;     /* → #4F9CFF */
 }
 
 html,

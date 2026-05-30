@@ -29,7 +29,6 @@ import {
   toArabicDigits,
 } from "@/lib/utils";
 import RichTextEditor from "@/components/RichTextEditor";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 type Category = "AUDIO" | "VIDEO" | "WRITTEN";
 type TopicType = "THEME" | "PROGRAM";
@@ -86,14 +85,12 @@ export default function DashboardClient({
   initialMessages,
   initialTopics,
   totalVisits,
-  theme,
   dbError,
 }: {
   initialItems: Item[];
   initialMessages: Message[];
   initialTopics: Topic[];
   totalVisits: number;
-  theme: "classic" | "ocean";
   dbError: string | null;
 }) {
   const router = useRouter();
@@ -217,8 +214,6 @@ export default function DashboardClient({
           {dbError}
         </div>
       )}
-
-      <ThemeSwitcher current={theme} />
 
       <div className="grid gap-3 sm:grid-cols-3 mb-6">
         <StatBox icon={Eye}   label="إجمالي الزوار"  value={totalVisits} />

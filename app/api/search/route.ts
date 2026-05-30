@@ -17,6 +17,7 @@ export async function GET(req: Request) {
     where.OR = [
       { title: { contains: q, mode: "insensitive" } },
       { description: { contains: q, mode: "insensitive" } },
+      { content: { contains: q, mode: "insensitive" } },
     ];
   }
   if (category && ["AUDIO", "VIDEO", "WRITTEN"].includes(category)) {

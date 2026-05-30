@@ -232,9 +232,10 @@ export default function DashboardClient({
       </div>
 
       <div className="grid gap-8 lg:grid-cols-5">
+        <div className="lg:col-span-2 space-y-8">
         <form
           onSubmit={onSubmit}
-          className="lg:col-span-2 bg-white rounded-2xl border border-ink/10 shadow-soft p-6 space-y-4 h-fit"
+          className="bg-white rounded-2xl border border-ink/10 shadow-soft p-6 space-y-4 h-fit"
         >
           <div className="flex items-center gap-2">
             <Plus className="h-5 w-5 text-gold" />
@@ -349,6 +350,14 @@ export default function DashboardClient({
           </button>
         </form>
 
+        {/* Topics & programs management — directly under the add-item form */}
+        <TopicsManager
+          topics={topics}
+          setTopics={setTopics}
+          onChanged={() => router.refresh()}
+        />
+        </div>
+
         <div className="lg:col-span-3">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-display font-bold text-ink">المحتوى الحالي</h2>
@@ -456,13 +465,6 @@ export default function DashboardClient({
           )}
         </div>
       </div>
-
-      {/* Topics & programs management */}
-      <TopicsManager
-        topics={topics}
-        setTopics={setTopics}
-        onChanged={() => router.refresh()}
-      />
 
       {/* Contact messages */}
       <section className="mt-10">
@@ -814,7 +816,7 @@ function TopicSelector({
   if (topics.length === 0) {
     return (
       <p className="text-xs text-ink/50">
-        لا توجد مواضيع بعد. أضِف موضوعاً أو برنامجاً من قسم «المواضيع والبرامج» في الأسفل.
+        لا توجد مواضيع بعد. أضِف موضوعاً أو برنامجاً من قسم «المواضيع والبرامج».
       </p>
     );
   }
@@ -974,7 +976,7 @@ function TopicsManager({
   }
 
   return (
-    <section className="mt-10">
+    <section>
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-display font-bold text-ink dark:text-sand flex items-center gap-2">
           <Layers className="h-5 w-5 text-gold" />
@@ -983,10 +985,10 @@ function TopicsManager({
         <span className="chip">{toArabicDigits(topics.length)} موضوع/برنامج</span>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-5">
+      <div className="space-y-6">
         <form
           onSubmit={addTopic}
-          className="lg:col-span-2 bg-white rounded-2xl border border-ink/10 shadow-soft p-5 space-y-3 h-fit"
+          className="bg-white rounded-2xl border border-ink/10 shadow-soft p-5 space-y-3 h-fit"
         >
           <div className="flex items-center gap-2">
             <Plus className="h-4 w-4 text-gold" />
@@ -1043,7 +1045,7 @@ function TopicsManager({
           </button>
         </form>
 
-        <div className="lg:col-span-3">
+        <div>
           {topics.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-ink/15 bg-white p-8 text-center text-ink/60">
               لا توجد مواضيع بعد. أضِف أول موضوع أو برنامج من النموذج.

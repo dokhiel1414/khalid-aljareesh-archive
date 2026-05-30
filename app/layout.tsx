@@ -35,6 +35,11 @@ export const metadata: Metadata = {
     "توجيهات أسرية",
   ],
   alternates: { canonical: "/" },
+  // When verifying ownership in Google Search Console via the HTML-tag method,
+  // set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION on Vercel (no code change needed).
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION } }
+    : {}),
   robots: {
     index: true,
     follow: true,

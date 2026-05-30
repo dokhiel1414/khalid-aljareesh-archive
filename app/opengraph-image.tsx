@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { SITE_URL } from "@/lib/site";
 
 // Default social-share image for the whole site (1200×630).
 export const runtime = "nodejs";
@@ -10,9 +9,10 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image() {
+  // public/ assets aren't bundled into serverless functions — fetch over HTTP.
   const [bold, regular] = await Promise.all([
-    readFile(join(process.cwd(), "public/fonts/thmanyahserifdisplay-Bold.otf")),
-    readFile(join(process.cwd(), "public/fonts/thmanyahserifdisplay-Medium.otf")),
+    fetch(`${SITE_URL}/fonts/thmanyahserifdisplay-Bold.otf`).then((r) => r.arrayBuffer()),
+    fetch(`${SITE_URL}/fonts/thmanyahserifdisplay-Medium.otf`).then((r) => r.arrayBuffer()),
   ]);
 
   return new ImageResponse(

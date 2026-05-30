@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma db push --skip-generate && node scripts/import-program.mjs && node scripts/link-program.mjs && node scripts/import-batch.mjs && next build",
+    "build": "prisma generate && prisma db push --skip-generate && node scripts/import-program.mjs && node scripts/link-program.mjs && node scripts/import-batch.mjs scripts/manifests/batch-suluk.json && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",

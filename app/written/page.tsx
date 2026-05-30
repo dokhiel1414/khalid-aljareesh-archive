@@ -9,8 +9,16 @@ export const metadata = { title: "المقالات" };
 
 async function getItems() {
   try {
+    // Written section = anything readable: WRITTEN items (articles/PDFs) plus
+    // merged audio/video items that carry an article body (content). This keeps
+    // a lecture that has both a recording and a transcript discoverable here too.
     return await prisma.item.findMany({
-      where: { category: "WRITTEN" },
+      where: {
+        OR: [
+          { category: "WRITTEN" },
+          { AND: [{ content: { not: null } }, { content: { not: "" } }] },
+        ],
+      },
       orderBy: { publishedAt: "desc" },
     });
   } catch {

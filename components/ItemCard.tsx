@@ -44,6 +44,16 @@ export default function ItemCard({ item }: { item: Item }) {
     item.category === "AUDIO" ? "استمع الآن" :
     item.category === "VIDEO" ? "شاهد الآن" : "اقرأ الآن";
   const views = item.viewCount ?? 0;
+  // A merged lecture: a media item (audio/video) that also carries a transcript.
+  const isCombined =
+    item.category !== "WRITTEN" && !!item.content && item.content.trim().length > 0;
+  const combinedLabel = item.category === "VIDEO" ? "مرئي + نص" : "صوتي + نص";
+  const combinedBadge = isCombined ? (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-brown/10 text-brown dark:text-gold border border-brown/20 whitespace-nowrap">
+      <BookOpenCheck className="h-3 w-3" />
+      {combinedLabel}
+    </span>
+  ) : null;
 
   // Article-style card (no thumbnail) — title-first, text-focused.
   if (!cover) {
@@ -51,10 +61,13 @@ export default function ItemCard({ item }: { item: Item }) {
     return (
       <article className="card group flex flex-col p-5 md:p-6">
         <div className="flex items-center justify-between gap-2 mb-3">
-          <span className="chip-gold">
-            <Icon className="h-3.5 w-3.5" />
-            {CATEGORY_LABEL[item.category]}
-          </span>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="chip-gold">
+              <Icon className="h-3.5 w-3.5" />
+              {CATEGORY_LABEL[item.category]}
+            </span>
+            {combinedBadge}
+          </div>
           <span className="inline-flex items-center gap-1 text-xs text-muted">
             <Eye className="h-3.5 w-3.5" />
             {toArabicDigits(views.toLocaleString("en-US"))}
@@ -131,6 +144,7 @@ export default function ItemCard({ item }: { item: Item }) {
         >
           {item.title}
         </Link>
+        {combinedBadge && <div className="-mt-1">{combinedBadge}</div>}
         {item.description && (
           <p className="text-sm text-muted leading-relaxed line-clamp-3">
             {item.description}

@@ -177,9 +177,9 @@ html { color-scheme: light; }
   /* Mobile baseline */
   font-size: 1.3rem;
   line-height: 2.05;
-  /* Heavier body weight — TradArabic at 400 reads too thin; 540 stays
-     readable while bold (700) still stands out. */
-  font-weight: 540;
+  /* TradArabicMorph is a single-weight font, so font-weight has no effect.
+     Thicken the glyphs with a same-colour stroke instead. */
+  -webkit-text-stroke: 0.5px currentColor;
   color: #1a3550;
   word-spacing: 0.04em;
 }
@@ -210,7 +210,7 @@ html.dark .prose { color: #E7DDD0; }
   text-justify: inter-word;
   hanging-punctuation: first last;
 }
-.prose strong, .prose b { color: #072C49; font-weight: 700; }
+.prose strong, .prose b { color: #072C49; font-weight: 700; -webkit-text-stroke: 1px currentColor; }
 html.dark .prose strong, html.dark .prose b { color: #DEA470; }
 
 .prose em, .prose i { color: #6b3d24; font-style: italic; }
@@ -222,6 +222,7 @@ html.dark .prose em, html.dark .prose i { color: #DEA470; }
   margin: 1.6em 0 0.6em;
   line-height: 1.4;
   font-weight: 700;
+  -webkit-text-stroke: 0.9px currentColor;
 }
 html.dark .prose h1, html.dark .prose h2, html.dark .prose h3, html.dark .prose h4 { color: #ECE6DD; }
 

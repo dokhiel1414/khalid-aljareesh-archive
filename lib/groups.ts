@@ -16,7 +16,7 @@ export const GROUPS: CommunityGroup[] = [
     name: "الذاكرون الله كثيراً والذاكرات",
     description: "سلسلة الأعمال والأذكار الحصن المتين.",
     links: [
-      { platform: "whatsapp", url: "https://chat.whatsapp.com/FWEFlntNKyq2AOcjDZR0rZ?mode=wwt" },
+      { platform: "whatsapp", url: "https://chat.whatsapp.com/EoU9CrfiR1jDeCHO5TDbxZ?mode=wwt" },
       { platform: "telegram", url: "https://t.me/+wLRbhKjQFuNmYzBk" },
     ],
   },

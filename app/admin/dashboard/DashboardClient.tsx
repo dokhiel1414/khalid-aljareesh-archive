@@ -27,6 +27,7 @@ import {
   TOPIC_TYPE_LABEL,
   formatArabicDate,
   toArabicDigits,
+  itemCountLabel,
 } from "@/lib/utils";
 import RichTextEditor from "@/components/RichTextEditor";
 
@@ -356,7 +357,7 @@ export default function DashboardClient({
         <div className="lg:col-span-3">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-display font-bold text-ink">المحتوى الحالي</h2>
-            <span className="chip">{items.length} عنصر</span>
+            <span className="chip">{itemCountLabel(items.length)}</span>
           </div>
 
           {items.length === 0 ? (
@@ -1186,7 +1187,7 @@ function TopicRow({
           </a>
           <span className="chip-gold">{TOPIC_TYPE_LABEL[topic.type]}</span>
           <span className="text-xs text-muted">
-            {toArabicDigits(topic._count.items)} عنصر
+            {itemCountLabel(topic._count.items)}
           </span>
         </div>
         {topic.description && (

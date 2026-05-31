@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, Layers, ListOrdered } from "lucide-react";
-import { toArabicDigits } from "@/lib/utils";
+import { itemCountLabel } from "@/lib/utils";
 
 type Topic = {
   slug: string;
@@ -49,7 +49,7 @@ export default function TopicCard({ topic }: { topic: Topic }) {
         </p>
       )}
       <div className="relative mt-2.5 pt-2.5 flex items-center justify-between border-t border-white/10 text-xs text-sand/80">
-        <span>{toArabicDigits(topic.count ?? 0)} عنصر</span>
+        <span>{itemCountLabel(topic.count ?? 0)}</span>
         <ArrowLeft className="h-4 w-4 opacity-70 group-hover:-translate-x-1 transition" />
       </div>
     </Link>

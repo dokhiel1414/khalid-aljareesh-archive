@@ -70,3 +70,17 @@ const AR_DIGITS = "٠١٢٣٤٥٦٧٨٩";
 export function toArabicDigits(input: string | number): string {
   return String(input).replace(/\d/g, (d) => AR_DIGITS[Number(d)]);
 }
+
+/** Correct Arabic noun form for a count of items (تمييز العدد). */
+export function itemNoun(n: number): string {
+  const x = Math.abs(Math.trunc(n));
+  if (x === 1) return "عنصر";
+  if (x === 2) return "عنصران";
+  if (x >= 3 && x <= 10) return "عناصر";
+  return "عنصراً"; // 11 فأكثر (وكذلك 0)
+}
+
+/** "<عدد بالعربية> <الكلمة المناسبة>" — مثل «٩ عناصر» / «٢١١ عنصراً». */
+export function itemCountLabel(n: number): string {
+  return `${toArabicDigits(n)} ${itemNoun(n)}`;
+}

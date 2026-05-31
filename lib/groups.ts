@@ -54,8 +54,8 @@ export const GROUPS: CommunityGroup[] = [
     description:
       "برنامج يعرض أسباب دخول الجنة كما وردت في الكتاب والسنة مع شواهد مشجّعة عليها.",
     links: [
-      { platform: "whatsapp", url: "https://chat.whatsapp.com/HAMJhtBEybBDT2NXn3OyZA" },
-      { platform: "telegram", url: "https://t.me/+jEZAPOu2dsllOWM0" },
+      { platform: "whatsapp", url: "https://chat.whatsapp.com/KDGJx5D0BXg4jsF3vtpypv" },
+      { platform: "telegram", url: "https://t.me/+I8jZJTC_Dn5mOWY8" },
     ],
   },
 ];

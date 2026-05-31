@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import Hero from "@/components/Hero";
 import CategoryGrid from "@/components/CategoryGrid";
 import TopicsShowcase from "@/components/TopicsShowcase";
+import CommunityGroups from "@/components/CommunityGroups";
 import ItemCard from "@/components/ItemCard";
 import EmptyState from "@/components/EmptyState";
 import { prisma } from "@/lib/prisma";
@@ -29,6 +30,24 @@ export default async function HomePage() {
       <Hero />
       <CategoryGrid />
       <TopicsShowcase />
+
+      <section className="container py-10">
+        <div className="flex items-end justify-between gap-4 mb-6">
+          <div>
+            <h2 className="section-title">مجموعات التواصل</h2>
+            <p className="text-muted mt-1 text-sm md:text-base">
+              انضمّ إلى مجموعاتنا وقنواتنا على واتساب وتيليجرام لتصلك الفوائد والبرامج أولاً بأول.
+            </p>
+          </div>
+          <Link
+            href="/groups"
+            className="hidden sm:inline-flex btn-ghost text-ink hover:bg-ink/5"
+          >
+            صفحة المجموعات <ArrowLeft className="h-4 w-4" />
+          </Link>
+        </div>
+        <CommunityGroups />
+      </section>
 
       <section className="container pb-20">
         <div className="flex items-end justify-between gap-4 mb-6">

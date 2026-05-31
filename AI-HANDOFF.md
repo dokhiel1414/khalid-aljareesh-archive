@@ -80,7 +80,7 @@ git push origin main          # ← يطلق النشر التلقائي
 vercel ls khalid-aljareesh-archive          # يعرض آخر عمليات النشر وحالتها
 vercel inspect <deployment-url> --json       # readyState: BUILDING / READY / ERROR
 ```
-الموقع الإنتاجي الثابت: `https://khalid-aljareesh-archive.vercel.app`.
+الموقع الإنتاجي: الدومين الرسمي `https://k-algrysh.com` (وما زال `https://khalid-aljareesh-archive.vercel.app` يعمل أيضاً).
 
 > يوجد أيضاً `deploy.ps1` (طريقة نشر يدوية قديمة عبر Vercel CLI). لم تعد ضرورية بعد ربط GitHub، لكنها تعمل.
 
@@ -206,7 +206,17 @@ data/all-items.json       # نسخة من المحتوى (تُستخدم للت�
 
 ## 11) آخر ما تم إنجازه (سياق حديث)
 
-### دفعة تحسينات UX/أداء/SEO (2026-05-30، منشورة)
+### الدومين الرسمي + ظهور البحث (2026-05-31، الأحدث)
+- **الدومين الرسمي `https://k-algrysh.com`** مربوط ويعمل (مسجَّل في Vercel تحت `dokhiels-projects`، nameservers Vercel). `FALLBACK` في `lib/site.ts` = الدومين الجديد، فكل canonical/sitemap/robots/SEO تستخدمه. `vercel.app` ما زال يعمل لكن canonical يشير للرسمي (يحلّ ازدواج المحتوى).
+- **Google Search Console**: تمّ **التحقّق من الملكية** بطريقة **وسم HTML** (الرمز في `metadata.verification.google` داخل `layout.tsx`)، و**أُرسلت `sitemap.xml`**. (تعذّر إضافة DNS عبر `vercel dns` — صلاحية التوكن محدودة؛ أُضيف السجل يدوياً في لوحة Vercel أيضاً.)
+- **Vercel Web Analytics مفعّل** من اللوحة (`<Analytics/>` في `layout.tsx`).
+- **الاسم صار «خالد بن علي الجريش»** في كل الموقع (أُزيل «الشيخ»): `SITE_NAME="أرشيف خالد بن علي الجريش"`، `SHEIKH_NAME="خالد بن علي الجريش"`، وWaجهة/Navbar/SEO.
+- **الشريط العلوي**: العنوان «خالد بن علي الجريش» + سطر صغير «مكتبة دعوية» (يظهر على الجوال أيضاً).
+- **أزرار المشاركة أيقونات فقط** (`ShareButtons`: واتساب/تيليجرام/إكس/نسخ). **حُذفت** ميزتا **OpenGraph image** (`app/opengraph-image.tsx`) و**«مواد ذات صلة»** من صفحة العنصر.
+- **حُذف عنصر** «كيف نجعل من بيوتنا سكناً» من القاعدة + شاهد قبر، عبر `scripts/delete-items.mjs` (يُمرَّر driveFileId في سكربت البناء مؤقتاً ثم يُعاد).
+- **معلّق على المالك**: تدوير `AUTH_SECRET` (القسم 12). واختياري: إضافة `www.k-algrysh.com` في Vercel (الشهادة للـapex فقط)، وBing Webmaster.
+
+### دفعة تحسينات UX/أداء/SEO (2026-05-30، منشورة) — *(ملاحظة: OG image و«مواد ذات صلة» أُزيلتا في 2026-05-31)*
 - **SEO أساسي**: `sitemap.ts`، `robots.ts`، JSON-LD (`lib/seo.ts`)، canonical/OpenGraph، `lib/site.ts` (`SITE_URL` قابل للضبط)، `opengraph-image.tsx`، `icon.svg`. (تفاصيل في القسمين 8 والذاكرة.)
 - **مشغّل صوتي ثابت** يبقى عبر التنقّل: `AudioPlayerProvider`+`PersistentPlayer`+`LecturePlayCard`.
 - **أزرار مشاركة** (`ShareButtons`)، **ترقيم الأقسام** (`RevealGrid`: 24 + «تحميل المزيد»)، **مواد ذات صلة** + **مسار مرئي** في صفحة العنصر، **بحث في التفريغ** (`content`).
@@ -232,13 +242,13 @@ data/all-items.json       # نسخة من المحتوى (تُستخدم للت�
 - **نظام المواضيع والبرامج** (`Topic`/`ItemTopic`/`TopicType`): API `app/api/topics/*`، صفحات `app/topics` و`app/topic/[slug]`، مكوّنات `TopicCard`/`TopicsShowcase`، إدارة من `DashboardClient`. الإسناد يدوي.
 - **استيراد برنامج** `scripts/import-program.mjs` + `link-program.mjs` (مثل «توجيهات أسرية»: 105 صوتي + ربط 104 مقالة).
 
-سجل الـcommits الأخير (الأحدث أولاً): `9952f29`, `e40c0c0`, `08e3507`, `db227b0`, `2085c4f`, `82332f2`, `0c19049`, `93a8a00`, `3881440`, `750ad83`.
+سجل الـcommits الأخير (الأحدث أولاً): `eb8d0b3` (وسم تحقّق Google), `b1b408e` (ربط الدومين), `f1c5c18` (تغيير الاسم + إزالة OG/ذات الصلة + حذف عنصر), `3fc1104` (دفعة UX/أداء), `b009da7` (أساس SEO), `9952f29`, `750ad83`.
 
 ---
 
 ## 12) تنبيه أمني معلّق (يُنصح بمعالجته)
 
-ملف `deploy.ps1` (السطر ~18) يحتوي قيمة `AUTH_SECRET` مكتوبة صراحةً. المستودع خاص فالخطر محدود، لكن يُفضّل: **توليد مفتاح جديد**، تحديثه على Vercel (`AUTH_SECRET` لكل البيئات)، وإزالة القيمة الصريحة من الملف. ملاحظة: تغيير `AUTH_SECRET` يُبطل جلسات تسجيل دخول المسؤول الحالية (يحتاج إعادة تسجيل دخول).
+أُزيلت قيمة `AUTH_SECRET` الصريحة من `deploy.ps1` (تُقرأ الآن من `$env:AUTH_SECRET`). **يبقى مستحسناً**: **توليد مفتاح جديد** (`openssl rand -base64 48`) وتحديثه على Vercel (`AUTH_SECRET` لكل البيئات) — لأن القيمة القديمة بقيت مكشوفة في تاريخ Git. ملاحظة: تغيير `AUTH_SECRET` يُبطل جلسة دخول المسؤول الحالية (يحتاج إعادة تسجيل دخول). هذه خطوة يفعلها المالك في لوحة Vercel.
 
 ---
 

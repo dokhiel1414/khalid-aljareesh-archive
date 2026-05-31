@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma db push --skip-generate && node scripts/import-program.mjs && node scripts/link-program.mjs && node scripts/import-batch.mjs && node scripts/delete-items.mjs 1KD7EjcVJ778OMuwpPFtS_13WltrcSMnR && next build",
+    "build": "prisma generate && prisma db push --skip-generate && node scripts/import-program.mjs && node scripts/link-program.mjs && node scripts/import-batch.mjs && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",

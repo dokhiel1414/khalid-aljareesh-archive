@@ -26,10 +26,10 @@ export default function Navbar() {
             </div>
             <div className="leading-tight">
               <div className="font-display font-bold text-ink dark:text-sand whitespace-nowrap text-[13px] sm:text-base">
-                الشيخ خالد بن علي الجريش
+                خالد بن علي الجريش
               </div>
-              <div className="hidden sm:block text-xs text-muted">
-                مكتبة رقمية للمحاضرات والكتب
+              <div className="text-[10px] sm:text-xs text-muted">
+                مكتبة دعوية
               </div>
             </div>
           </Link>

@@ -11,7 +11,7 @@ import { websiteJsonLd, organizationJsonLd, jsonLdScript } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 const DESCRIPTION =
-  "أرشيف رقمي يجمع الصوتيات والمرئيات والمقالات للشيخ خالد بن علي الجريش للاستماع والمشاهدة والقراءة المباشرة.";
+  "أرشيف رقمي يجمع الصوتيات والمرئيات والمقالات لخالد بن علي الجريش للاستماع والمشاهدة والقراءة المباشرة.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -21,10 +21,10 @@ export const metadata: Metadata = {
   },
   description: DESCRIPTION,
   applicationName: SITE_NAME,
-  authors: [{ name: "الشيخ خالد بن علي الجريش" }],
+  authors: [{ name: "خالد بن علي الجريش" }],
   keywords: [
     "خالد الجريش",
-    "الشيخ خالد بن علي الجريش",
+    "خالد بن علي الجريش",
     "محاضرات",
     "دروس",
     "خطب",

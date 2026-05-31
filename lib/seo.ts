@@ -42,7 +42,7 @@ export function organizationJsonLd() {
     name: SITE_NAME,
     url: SITE_URL,
     description:
-      "أرشيف رقمي يجمع الصوتيات والمرئيات والمقالات للشيخ خالد بن علي الجريش.",
+      "أرشيف رقمي يجمع الصوتيات والمرئيات والمقالات لخالد بن علي الجريش.",
     founder: { "@type": "Person", name: SHEIKH_NAME },
   };
 }

@@ -16,7 +16,6 @@ import {
 import { prisma } from "@/lib/prisma";
 import MediaEmbed from "@/components/MediaEmbed";
 import ShareButtons from "@/components/ShareButtons";
-import ItemCard from "@/components/ItemCard";
 import { absoluteUrl } from "@/lib/site";
 import ItemViewTracker from "@/components/ItemViewTracker";
 import { CATEGORY_LABEL, formatArabicDate, toArabicDigits } from "@/lib/utils";
@@ -59,30 +58,6 @@ async function getItem(id: string) {
   }
 }
 
-/** Items that share at least one topic with this one (excludes itself). */
-async function getRelated(itemId: string, topicIds: string[]) {
-  if (topicIds.length === 0) return [];
-  try {
-    const rels = await prisma.itemTopic.findMany({
-      where: { topicId: { in: topicIds }, itemId: { not: itemId } },
-      take: 30,
-      orderBy: { item: { publishedAt: "desc" } },
-      include: { item: true },
-    });
-    const seen = new Set<string>();
-    const out: (typeof rels)[number]["item"][] = [];
-    for (const r of rels) {
-      if (seen.has(r.itemId)) continue;
-      seen.add(r.itemId);
-      out.push(r.item);
-      if (out.length >= 6) break;
-    }
-    return out;
-  } catch {
-    return [];
-  }
-}
-
 /** Find the previous/next episode within a program (ordered series). */
 async function getProgramNav(topicId: string, currentItemId: string) {
   try {
@@ -117,7 +92,7 @@ export async function generateMetadata({
   if (!item) return { title: "العنصر غير موجود", robots: { index: false, follow: false } };
   const description =
     item.description ||
-    `${CATEGORY_LABEL[item.category]} للشيخ خالد بن علي الجريش: ${item.title}`;
+    `${CATEGORY_LABEL[item.category]} لخالد بن علي الجريش: ${item.title}`;
   const url = `/item/${item.id}`;
   return {
     title: item.title,
@@ -166,10 +141,6 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
   ]);
 
   const shareUrl = absoluteUrl(`/item/${item.id}`);
-  const related = await getRelated(
-    item.id,
-    topicRels.map((r) => r.topicId),
-  );
 
   return (
     <>
@@ -361,19 +332,6 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
         </nav>
       )}
 
-      {related.length > 0 && (
-        <section className="mt-12 border-t border-ink/10 dark:border-dark-border pt-8">
-          <h2 className="section-title mb-5">مواد ذات صلة</h2>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {related.map((r) => (
-              <ItemCard
-                key={r.id}
-                item={{ ...r, publishedAt: r.publishedAt.toISOString() }}
-              />
-            ))}
-          </div>
-        </section>
-      )}
       </article>
     </>
   );

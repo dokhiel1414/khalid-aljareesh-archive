@@ -15,7 +15,7 @@ export default function TermsPage() {
       <section className="container py-10 md:py-14">
         <div className="max-w-3xl mx-auto bg-white dark:bg-dark-card border border-ink/10 dark:border-dark-border rounded-2xl shadow-soft p-6 md:p-10 leading-loose text-ink dark:text-sand">
           <p className="mb-8 text-lg leading-loose">
-            السلام عليكم ومرحباً بكم في موقع الشيخ خالد بن علي الجريش. يرجى
+            السلام عليكم ومرحباً بكم في موقع خالد بن علي الجريش. يرجى
             قراءة هذه الشروط والأحكام بعناية قبل استخدام الموقع. باستخدامك
             الموقع فإنك توافق على هذه الشروط والأحكام بالكامل، وإن لم توافق
             عليها فلا يُسمح لك باستخدام الموقع.

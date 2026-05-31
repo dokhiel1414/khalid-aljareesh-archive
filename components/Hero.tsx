@@ -7,7 +7,7 @@ export default function Hero() {
       <div className="container relative py-16 md:py-24">
         <div className="text-center animate-fade-up">
           <h1 className="font-display text-[clamp(1rem,4.7vw,3rem)] font-bold tracking-tight whitespace-nowrap">
-            مكتبة الشيخ <span className="text-gold">خالد بن علي الجريش</span> الرقمية
+            مكتبة <span className="text-gold">خالد بن علي الجريش</span> الرقمية
           </h1>
           <p className="mt-4 max-w-3xl mx-auto text-sand/80 md:text-lg leading-relaxed">
             محاضرات ودروس ومقالات في مكان واحد —

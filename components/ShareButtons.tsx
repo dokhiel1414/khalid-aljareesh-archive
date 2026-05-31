@@ -54,10 +54,7 @@ export default function ShareButtons({ url, title }: { url: string; title: strin
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className="inline-flex items-center gap-1.5 text-sm text-muted ml-1">
-        <Share2 className="h-4 w-4" />
-        مشاركة:
-      </span>
+      <Share2 className="h-4 w-4 text-muted ml-1" aria-hidden />
       {links.map((l) => (
         <a
           key={l.key}
@@ -65,19 +62,19 @@ export default function ShareButtons({ url, title }: { url: string; title: strin
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`مشاركة عبر ${l.label}`}
-          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium shadow-soft transition ${l.cls}`}
+          title={l.label}
+          className={`inline-flex items-center justify-center h-10 w-10 rounded-full shadow-soft transition ${l.cls}`}
         >
           {l.svg}
-          {l.label}
         </a>
       ))}
       <button
         onClick={copy}
         aria-label="نسخ الرابط"
-        className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium border border-ink/15 dark:border-dark-border text-ink/80 dark:text-sand/80 hover:bg-ink/5 dark:hover:bg-white/10 transition"
+        title={copied ? "تم النسخ" : "نسخ الرابط"}
+        className="inline-flex items-center justify-center h-10 w-10 rounded-full border border-ink/15 dark:border-dark-border text-ink/80 dark:text-sand/80 hover:bg-ink/5 dark:hover:bg-white/10 transition"
       >
-        {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <LinkIcon className="h-4 w-4" />}
-        {copied ? "تم النسخ" : "نسخ الرابط"}
+        {copied ? <Check className="h-5 w-5 text-emerald-600" /> : <LinkIcon className="h-5 w-5" />}
       </button>
     </div>
   );

@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="container py-10 grid gap-8 md:grid-cols-2">
         <div>
           <div className="font-display font-bold text-gold text-lg">
-            الشيخ خالد بن علي الجريش
+            خالد بن علي الجريش
           </div>
           <p className="mt-2 text-sm text-sand/70 leading-relaxed">
             أرشيف رقمي يجمع المحاضرات والدروس الصوتية والمرئية والكتابات
@@ -33,7 +33,7 @@ export default function Footer() {
       </div>
       <div className="border-t border-sand/10">
         <div className="container py-4 text-center text-xs text-sand/60">
-          {year} · أرشيف الشيخ خالد بن علي الجريش — المحتوى متاح للنشر والاستفادة لكل مسلم
+          {year} · أرشيف خالد بن علي الجريش — المحتوى متاح للنشر والاستفادة لكل مسلم
         </div>
       </div>
     </footer>

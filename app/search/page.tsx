@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "بحث",
-  description: "ابحث في أرشيف الشيخ خالد بن علي الجريش: صوتيات ومرئيات ومقالات.",
+  description: "ابحث في أرشيف خالد بن علي الجريش: صوتيات ومرئيات ومقالات.",
   robots: { index: false, follow: true },
 };
 

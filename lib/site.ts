@@ -19,8 +19,8 @@ function resolve(): string {
 
 export const SITE_URL = resolve();
 
-export const SITE_NAME = "أرشيف الشيخ خالد بن علي الجريش";
-export const SHEIKH_NAME = "الشيخ خالد بن علي الجريش";
+export const SITE_NAME = "أرشيف خالد بن علي الجريش";
+export const SHEIKH_NAME = "خالد بن علي الجريش";
 
 /** Build an absolute URL for a site-relative path. */
 export function absoluteUrl(path = "/"): string {

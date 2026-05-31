@@ -8,11 +8,11 @@ import { prisma } from "@/lib/prisma";
 export const revalidate = 60;
 export const metadata = {
   title: "المقالات",
-  description: "مقالات وكتب وتفريغات نصية للشيخ خالد بن علي الجريش — للقراءة المباشرة والتحميل.",
+  description: "مقالات وكتب وتفريغات نصية لخالد بن علي الجريش — للقراءة المباشرة والتحميل.",
   alternates: { canonical: "/written" },
   openGraph: {
-    title: "المقالات · أرشيف الشيخ خالد بن علي الجريش",
-    description: "مقالات وكتب وتفريغات نصية للشيخ خالد بن علي الجريش.",
+    title: "المقالات · أرشيف خالد بن علي الجريش",
+    description: "مقالات وكتب وتفريغات نصية لخالد بن علي الجريش.",
     url: "/written",
   },
 };

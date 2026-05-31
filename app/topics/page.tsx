@@ -6,10 +6,10 @@ import { prisma } from "@/lib/prisma";
 export const revalidate = 60;
 export const metadata = {
   title: "المواضيع والبرامج",
-  description: "تصفّح محتوى أرشيف الشيخ خالد بن علي الجريش حسب الموضوع أو البرنامج.",
+  description: "تصفّح محتوى أرشيف خالد بن علي الجريش حسب الموضوع أو البرنامج.",
   alternates: { canonical: "/topics" },
   openGraph: {
-    title: "المواضيع والبرامج · أرشيف الشيخ خالد بن علي الجريش",
+    title: "المواضيع والبرامج · أرشيف خالد بن علي الجريش",
     description: "تصفّح محتوى الأرشيف حسب الموضوع أو البرنامج.",
     url: "/topics",
   },

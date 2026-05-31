@@ -8,11 +8,11 @@ import { prisma } from "@/lib/prisma";
 export const revalidate = 60;
 export const metadata = {
   title: "المرئيات",
-  description: "مرئيات وحلقات مختارة للشيخ خالد بن علي الجريش — للمشاهدة المباشرة.",
+  description: "مرئيات وحلقات مختارة لخالد بن علي الجريش — للمشاهدة المباشرة.",
   alternates: { canonical: "/video" },
   openGraph: {
-    title: "المرئيات · أرشيف الشيخ خالد بن علي الجريش",
-    description: "مرئيات وحلقات مختارة للشيخ خالد بن علي الجريش.",
+    title: "المرئيات · أرشيف خالد بن علي الجريش",
+    description: "مرئيات وحلقات مختارة لخالد بن علي الجريش.",
     url: "/video",
   },
 };

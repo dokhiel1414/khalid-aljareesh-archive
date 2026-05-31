@@ -8,11 +8,11 @@ import { prisma } from "@/lib/prisma";
 export const revalidate = 60;
 export const metadata = {
   title: "الصوتيات",
-  description: "محاضرات ودروس صوتية للشيخ خالد بن علي الجريش — للاستماع المباشر والتحميل.",
+  description: "محاضرات ودروس صوتية لخالد بن علي الجريش — للاستماع المباشر والتحميل.",
   alternates: { canonical: "/audio" },
   openGraph: {
-    title: "الصوتيات · أرشيف الشيخ خالد بن علي الجريش",
-    description: "محاضرات ودروس صوتية للشيخ خالد بن علي الجريش.",
+    title: "الصوتيات · أرشيف خالد بن علي الجريش",
+    description: "محاضرات ودروس صوتية لخالد بن علي الجريش.",
     url: "/audio",
   },
 };

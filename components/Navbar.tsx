@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Home, Search, Users } from "lucide-react";
+import { Home, Search } from "lucide-react";
 import SearchBar from "./SearchBar";
 import ThemeToggle from "./ThemeToggle";
 import HijriToday from "./HijriToday";
@@ -25,7 +25,7 @@ export default function Navbar() {
               <IslamicStar className="h-full w-full" strokeWidth={4} />
             </div>
             <div className="leading-tight">
-              <div className="font-display font-bold text-ink dark:text-sand whitespace-nowrap text-[13px] sm:text-base">
+              <div className="font-display font-bold text-ink dark:text-sand whitespace-nowrap text-[15px] sm:text-xl">
                 خالد بن علي الجريش
               </div>
               <div className="text-[10px] sm:text-xs text-muted">
@@ -45,15 +45,6 @@ export default function Navbar() {
               aria-label="بحث"
             >
               <Search className="h-5 w-5" />
-            </Link>
-
-            <Link
-              href="/groups"
-              className="btn-ghost p-2"
-              aria-label="مجموعات التواصل"
-              title="مجموعات التواصل"
-            >
-              <Users className="h-5 w-5" />
             </Link>
 
             <Link

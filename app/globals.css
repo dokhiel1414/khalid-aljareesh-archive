@@ -177,6 +177,9 @@ html { color-scheme: light; }
   /* Mobile baseline */
   font-size: 1.3rem;
   line-height: 2.05;
+  /* Heavier body weight — TradArabic at 400 reads too thin; 540 stays
+     readable while bold (700) still stands out. */
+  font-weight: 540;
   color: #1a3550;
   word-spacing: 0.04em;
 }

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Home, Search } from "lucide-react";
+import { Home, Search, Users } from "lucide-react";
 import SearchBar from "./SearchBar";
 import ThemeToggle from "./ThemeToggle";
 import HijriToday from "./HijriToday";
@@ -45,6 +45,15 @@ export default function Navbar() {
               aria-label="بحث"
             >
               <Search className="h-5 w-5" />
+            </Link>
+
+            <Link
+              href="/groups"
+              className="btn-ghost p-2"
+              aria-label="مجموعات التواصل"
+              title="مجموعات التواصل"
+            >
+              <Users className="h-5 w-5" />
             </Link>
 
             <Link

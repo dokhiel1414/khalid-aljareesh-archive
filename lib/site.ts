@@ -7,7 +7,7 @@
 // When the official domain is purchased, set NEXT_PUBLIC_SITE_URL on Vercel and
 // every canonical/sitemap/OpenGraph URL updates automatically — no code change.
 
-const FALLBACK = "https://khalid-aljareesh-archive.vercel.app";
+const FALLBACK = "https://k-algrysh.com";
 
 function resolve(): string {
   const env = process.env.NEXT_PUBLIC_SITE_URL?.trim();

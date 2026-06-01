@@ -2,10 +2,11 @@ import { GROUPS, type Platform } from "@/lib/groups";
 
 const PLATFORM: Record<
   Platform,
-  { label: string; cls: string; icon: React.ReactNode }
+  { label: string; viewLabel: string; cls: string; icon: React.ReactNode }
 > = {
   whatsapp: {
     label: "واتساب",
+    viewLabel: "الواتس",
     cls: "bg-[#25D366] text-white hover:brightness-95",
     icon: (
       <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
@@ -15,6 +16,7 @@ const PLATFORM: Record<
   },
   telegram: {
     label: "تيليجرام",
+    viewLabel: "التلقرام",
     cls: "bg-[#229ED9] text-white hover:brightness-95",
     icon: (
       <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
@@ -33,8 +35,15 @@ export default function CommunityGroups() {
           <h3 className="font-display font-bold text-ink dark:text-sand text-lg leading-snug">
             {g.name}
           </h3>
-          {g.description && (
-            <p className="mt-2 text-sm text-muted leading-relaxed">{g.description}</p>
+          {(g.description || g.finished) && (
+            <p className="mt-2 text-sm text-muted leading-relaxed">
+              {g.description}
+              {g.finished && (
+                <span className="inline-flex items-center mr-2 px-2 py-0.5 rounded-full text-[11px] font-medium bg-ink/10 dark:bg-white/10 text-ink/70 dark:text-sand/70 align-middle">
+                  منتهي
+                </span>
+              )}
+            </p>
           )}
           <div className="mt-auto pt-4 flex flex-wrap gap-2">
             {g.links.map((l) => {
@@ -48,7 +57,7 @@ export default function CommunityGroups() {
                   className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium shadow-soft transition ${p.cls}`}
                 >
                   {p.icon}
-                  انضمام عبر {p.label}
+                  {g.finished ? `للاطلاع عبر ${p.viewLabel}` : `انضمام عبر ${p.label}`}
                 </a>
               );
             })}

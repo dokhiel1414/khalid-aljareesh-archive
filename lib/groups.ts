@@ -8,6 +8,8 @@ export type GroupLink = { platform: Platform; url: string };
 export type CommunityGroup = {
   name: string;
   description?: string;
+  /** true = the group's content has ended (shows a "منتهي" badge, "للاطلاع" buttons). */
+  finished?: boolean;
   links: GroupLink[];
 };
 
@@ -15,6 +17,7 @@ export const GROUPS: CommunityGroup[] = [
   {
     name: "الذاكرون الله كثيراً والذاكرات",
     description: "سلسلة الأعمال والأذكار الحصن المتين.",
+    finished: true,
     links: [
       { platform: "whatsapp", url: "https://chat.whatsapp.com/EoU9CrfiR1jDeCHO5TDbxZ?mode=wwt" },
       { platform: "telegram", url: "https://t.me/+wLRbhKjQFuNmYzBk" },
@@ -23,6 +26,7 @@ export const GROUPS: CommunityGroup[] = [
   {
     name: "إيمانيات",
     description: "قناة تهتم بالأعمال الإيمانية والسلوكية.",
+    finished: true,
     links: [{ platform: "telegram", url: "https://t.me/httpI20" }],
   },
   {
@@ -44,6 +48,7 @@ export const GROUPS: CommunityGroup[] = [
   },
   {
     name: "نماذج من خوف السلف",
+    finished: true,
     links: [
       { platform: "whatsapp", url: "https://chat.whatsapp.com/HAMJhtBEybBDT2NXn3OyZA" },
       { platform: "telegram", url: "https://t.me/+jEZAPOu2dsllOWM0" },
@@ -53,6 +58,7 @@ export const GROUPS: CommunityGroup[] = [
     name: "من كنوز الجنة",
     description:
       "برنامج يعرض أسباب دخول الجنة كما وردت في الكتاب والسنة مع شواهد مشجّعة عليها.",
+    finished: true,
     links: [
       { platform: "whatsapp", url: "https://chat.whatsapp.com/KDGJx5D0BXg4jsF3vtpypv" },
       { platform: "telegram", url: "https://t.me/+I8jZJTC_Dn5mOWY8" },

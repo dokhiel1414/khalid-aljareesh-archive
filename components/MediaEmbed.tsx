@@ -1,4 +1,5 @@
 import { drivePreviewUrl, extractDriveFileId } from "@/lib/drive";
+import { isYouTube, youtubeEmbedUrl } from "@/lib/youtube";
 import LecturePlayCard from "./LecturePlayCard";
 import CustomVideoPlayer from "./CustomVideoPlayer";
 
@@ -10,6 +11,22 @@ type Props = {
 };
 
 export default function MediaEmbed({ driveLink, driveFileId, kind, title }: Props) {
+  // YouTube videos (stored as a YouTube URL in driveLink) — embed via iframe.
+  if (kind === "VIDEO" && isYouTube(driveLink)) {
+    return (
+      <div className="w-full aspect-video rounded-2xl overflow-hidden bg-ink shadow-card border border-ink/10 dark:border-dark-border">
+        <iframe
+          src={youtubeEmbedUrl(driveLink) ?? ""}
+          title={title}
+          className="w-full h-full"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+
   const id = driveFileId ?? extractDriveFileId(driveLink);
   if (!id) return null;
 

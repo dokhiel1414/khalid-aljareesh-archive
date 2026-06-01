@@ -86,12 +86,18 @@ async function run() {
     for (let i = 0; i < entries.length; i++) {
       const e = entries[i];
       try {
-        if (!e.id || !e.title || !e.category) continue;
-        if (tombstones.has(e.id)) { skippedTomb++; continue; }
+        if (!e.title || !e.category) continue;
+        const isYt = !!e.youtube;
+        const driveId = isYt ? null : e.id;
+        if (!isYt && !driveId) continue;
+        if (driveId && tombstones.has(driveId)) { skippedTomb++; continue; }
 
         const topic = e.topic ? await getTopic(e.topic, e.topicType) : null;
-        const driveLink = `https://drive.google.com/file/d/${e.id}/view?usp=drivesdk`;
-        const found = byDriveId.get(e.id) || byKey.get(`${e.category}|${loose(e.title)}`);
+        const driveLink = isYt
+          ? `https://www.youtube.com/watch?v=${e.youtube}`
+          : `https://drive.google.com/file/d/${driveId}/view?usp=drivesdk`;
+        const found =
+          (driveId ? byDriveId.get(driveId) : null) || byKey.get(`${e.category}|${loose(e.title)}`);
 
         if (found) {
           if (topic) {
@@ -108,7 +114,8 @@ async function run() {
             title: e.title,
             category: e.category,
             driveLink,
-            driveFileId: e.id,
+            driveFileId: driveId,
+            ...(isYt ? { thumbnail: `https://i.ytimg.com/vi/${e.youtube}/hqdefault.jpg` } : {}),
             publishedAt: new Date(base - i * 3600000),
           };
           if (topic) {
@@ -116,7 +123,7 @@ async function run() {
           }
           const item = await prisma.item.create({ data });
           // keep maps fresh so duplicates within the same manifest are caught
-          byDriveId.set(e.id, item);
+          if (driveId) byDriveId.set(driveId, item);
           byKey.set(`${e.category}|${loose(e.title)}`, item);
           created++;
         }

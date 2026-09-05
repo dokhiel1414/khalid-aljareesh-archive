@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AudioPlayerProvider from "@/components/AudioPlayerProvider";
 import PersistentPlayer from "@/components/PersistentPlayer";
+import CommandPalette from "@/components/CommandPalette";
+import ToastProvider from "@/components/ui/toast";
 import { Analytics } from "@vercel/analytics/react";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 import { websiteJsonLd, organizationJsonLd, jsonLdScript } from "@/lib/seo";
@@ -90,12 +92,16 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col font-sans">
-        <AudioPlayerProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <PersistentPlayer />
-        </AudioPlayerProvider>
+        <ToastProvider>
+          <CommandPalette>
+            <AudioPlayerProvider>
+              <Navbar />
+              <main className="flex-1">{children}</main>
+              <Footer />
+              <PersistentPlayer />
+            </AudioPlayerProvider>
+          </CommandPalette>
+        </ToastProvider>
         <Analytics />
       </body>
     </html>

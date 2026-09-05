@@ -11,6 +11,12 @@ export async function GET(req: Request) {
   const category = url.searchParams.get("category");
   const from = url.searchParams.get("from");
   const to = url.searchParams.get("to");
+  // "light=1" strips the heavy article HTML (content) — for live search UIs.
+  const light = url.searchParams.get("light") === "1";
+  const limitParam = Number(url.searchParams.get("limit") ?? "");
+  const limit = Number.isFinite(limitParam) && limitParam >= 1
+    ? Math.min(Math.floor(limitParam), 100)
+    : 100;
 
   const where: Prisma.ItemWhereInput = {};
   if (q) {
@@ -41,13 +47,20 @@ export async function GET(req: Request) {
   const items = await prisma.item.findMany({
     where,
     orderBy: { publishedAt: "desc" },
-    take: 100,
+    take: limit,
   });
   if (items.length === 0) {
     const dev = await loadDevItems();
-    const fallback = searchItems(dev, q, category);
-    const limit = 100;
-    return NextResponse.json({ items: fallback.slice(0, limit) });
+    const fallback = searchItems(dev, q, category).slice(0, limit);
+    return NextResponse.json({
+      items: light
+        ? fallback.map(({ content: _content, ...rest }) => rest)
+        : fallback,
+    });
   }
-  return NextResponse.json({ items });
+  return NextResponse.json({
+    items: light
+      ? items.map(({ content: _content, ...rest }) => rest)
+      : items,
+  });
 }

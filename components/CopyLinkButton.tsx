@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Check, Copy, Link as LinkIcon, Share2 } from "lucide-react";
+import { useToast } from "./ui/toast";
 
 export default function CopyLinkButton({
   path,
@@ -14,6 +15,13 @@ export default function CopyLinkButton({
   variant?: "default" | "icon" | "gold";
 }) {
   const [copied, setCopied] = useState(false);
+  const toast = useToast();
+
+  function markCopied() {
+    setCopied(true);
+    toast("تم نسخ الرابط", "success");
+    setTimeout(() => setCopied(false), 1800);
+  }
 
   async function onClick(e: React.MouseEvent) {
     e.preventDefault();
@@ -35,8 +43,7 @@ export default function CopyLinkButton({
         return;
       }
       await navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
+      markCopied();
     } catch {
       // Fallback: select-then-copy via a temporary element
       const ta = document.createElement("textarea");
@@ -45,7 +52,9 @@ export default function CopyLinkButton({
       ta.style.opacity = "0";
       document.body.appendChild(ta);
       ta.select();
-      try { document.execCommand("copy"); setCopied(true); setTimeout(() => setCopied(false), 1800); } catch {}
+      try { document.execCommand("copy"); markCopied(); } catch {
+        toast("تعذّر النسخ — انسخ الرابط من شريط المتصفح", "info");
+      }
       document.body.removeChild(ta);
     }
   }

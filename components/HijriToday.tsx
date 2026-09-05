@@ -26,7 +26,7 @@ export default function HijriToday({ compact = false }: { compact?: boolean }) {
   // The Hijri strip lives on a dark background (bg-ink) in both light and
   // dark themes — always render with sand-toned text for contrast.
   return (
-    <span className={`inline-flex items-center gap-1.5 ${compact ? "text-xs" : "text-sm"} text-sand/90`}>
+    <span className={`inline-flex items-center gap-1.5 ${compact ? "text-xs" : "text-sm"} text-sand/90 tabular-nums`}>
       <CalendarDays className={compact ? "h-3.5 w-3.5 text-gold" : "h-4 w-4 text-gold"} />
       {text}
     </span>

@@ -132,7 +132,7 @@ html.dark body {
     @apply chip bg-gold/15 text-ink dark:bg-gold/25 dark:text-sand;
   }
   .section-title {
-    @apply font-display text-2xl md:text-3xl font-bold text-ink dark:text-sand;
+    @apply font-display text-2xl md:text-3xl font-bold text-ink dark:text-sand text-balance;
   }
   .text-muted {
     @apply text-ink/60 dark:text-sand/60;
@@ -209,6 +209,7 @@ html.dark .prose { color: #E7DDD0; }
   text-align: justify;
   text-justify: inter-word;
   hanging-punctuation: first last;
+  text-wrap: pretty;
 }
 .prose strong, .prose b { color: #072C49; font-weight: 700; -webkit-text-stroke: 1px currentColor; }
 html.dark .prose strong, html.dark .prose b { color: #DEA470; }
@@ -223,6 +224,7 @@ html.dark .prose em, html.dark .prose i { color: #DEA470; }
   line-height: 1.4;
   font-weight: 700;
   -webkit-text-stroke: 0.9px currentColor;
+  text-wrap: balance;
 }
 html.dark .prose h1, html.dark .prose h2, html.dark .prose h3, html.dark .prose h4 { color: #ECE6DD; }
 
@@ -306,4 +308,71 @@ html.dark .ProseMirror[data-placeholder]:empty::before { color: rgba(236,230,221
   border-radius: 0.35em;
 }
 html.dark .prose .quran, html.dark .prose .ayah { color: #DEA470; background: rgba(222,164,112,0.2); }
+
+/* =====================================================================
+   UI MOTION
+   Every transition here is ≤300ms and purposeful (see Emil Kowalski's
+   "You don't need animations"): overlays/dialogs/toasts/sheet enter
+   quickly, and prefers-reduced-motion disables all of it.
+   ===================================================================== */
+@keyframes overlay-fade {
+  from { opacity: 0; } to { opacity: 1; }
+}
+@keyframes palette-in {
+  from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes toast-out {
+  to { opacity: 0; transform: translateY(8px); }
+}
+@keyframes skeleton-shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+.anim-overlay-fade { animation: overlay-fade 0.15s ease-out; }
+.anim-palette-in  { animation: palette-in 0.18s ease-out; }
+.anim-sheet-up    { animation: sheet-up 0.22s ease-out; }
+.anim-toast-in    { animation: toast-in 0.22s ease-out; }
+.anim-toast-out   { animation: toast-out 0.16s ease-in forwards; }
+
+/* Loading skeletons: soft shimmer matching the site palette */
+.skeleton {
+  border-radius: 0.5rem;
+  background:
+    linear-gradient(90deg,
+      rgb(var(--c-ink) / 0.08) 35%,
+      rgb(var(--c-ink) / 0.16) 50%,
+      rgb(var(--c-ink) / 0.08) 65%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s linear infinite;
+}
+html.dark .skeleton {
+  background:
+    linear-gradient(90deg,
+      rgb(var(--c-sand) / 0.08) 35%,
+      rgb(var(--c-sand) / 0.18) 50%,
+      rgb(var(--c-sand) / 0.08) 65%);
+  background-size: 200% 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-overlay-fade,
+  .anim-palette-in,
+  .anim-sheet-up,
+  .anim-toast-in,
+  .animate-fade-up,
+  .animate-spin {
+    animation: none;
+  }
+  .skeleton { animation: none; }
+}
 

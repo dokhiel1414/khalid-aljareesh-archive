@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import SectionHeader from "@/components/SectionHeader";
 import SearchBar from "@/components/SearchBar";
 import ItemGrid from "@/components/ItemGrid";
+import { toArabicDigits } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -81,9 +82,9 @@ export default async function SearchPage({
       <section className="container py-8">
         <SearchBar />
         <div className="mt-6 flex items-center justify-between">
-          <p className="text-sm text-ink/60">
+          <p className="text-sm text-ink/60 tabular-nums">
             {hasFilters
-              ? `النتائج: ${items.length}`
+              ? `النتائج: ${toArabicDigits(items.length)}`
               : "اكتب كلمة للبحث أو استخدم الفلاتر للتصفّح."}
           </p>
         </div>

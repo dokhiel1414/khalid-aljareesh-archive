@@ -51,7 +51,7 @@ export default function VisitCounter() {
     <span className="inline-flex items-center gap-1.5 text-xs text-sand/70">
       <Eye className="h-3.5 w-3.5 text-gold" />
       عدد الزوار:
-      <span className="font-medium text-sand">
+      <span className="font-medium text-sand tabular-nums">
         {count === null ? "…" : toArabicDigits(count.toLocaleString("en-US"))}
       </span>
     </span>

@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { Check, Link as LinkIcon, Send, Share2 } from "lucide-react";
+import { useToast } from "./ui/toast";
 
 /** WhatsApp / Telegram / X share + copy link, for an item page. */
 export default function ShareButtons({ url, title }: { url: string; title: string }) {
   const [copied, setCopied] = useState(false);
+  const toast = useToast();
   const text = `${title}`;
   const enc = encodeURIComponent;
 
@@ -46,9 +48,10 @@ export default function ShareButtons({ url, title }: { url: string; title: strin
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
+      toast("تم نسخ الرابط", "success");
       setTimeout(() => setCopied(false), 1800);
     } catch {
-      /* ignore */
+      toast("تعذّر النسخ — انسخ الرابط من شريط المتصفح", "info");
     }
   };
 

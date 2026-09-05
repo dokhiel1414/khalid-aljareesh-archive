@@ -68,7 +68,7 @@ export default function ItemCard({ item }: { item: Item }) {
             </span>
             {combinedBadge}
           </div>
-          <span className="inline-flex items-center gap-1 text-xs text-muted">
+          <span className="inline-flex items-center gap-1 text-xs text-muted tabular-nums">
             <Eye className="h-3.5 w-3.5" />
             {toArabicDigits(views.toLocaleString("en-US"))}
           </span>
@@ -128,7 +128,7 @@ export default function ItemCard({ item }: { item: Item }) {
           <Icon className="h-3.5 w-3.5" />
           {CATEGORY_LABEL[item.category]}
         </div>
-        <div className="absolute top-3 left-3 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-ink/60 text-sand text-[10px] backdrop-blur">
+        <div className="absolute top-3 left-3 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-ink/60 text-sand text-[10px] backdrop-blur tabular-nums">
           <Eye className="h-3 w-3 text-gold" />
           {toArabicDigits(views.toLocaleString("en-US"))}
         </div>
@@ -151,7 +151,7 @@ export default function ItemCard({ item }: { item: Item }) {
           </p>
         )}
         <div className="mt-auto flex items-center justify-between pt-2 text-xs text-muted gap-2">
-          <time>{formatArabicDate(item.publishedAt)}</time>
+          <time className="tabular-nums">{formatArabicDate(item.publishedAt)}</time>
           <div className="flex items-center gap-1">
             <Link
               href={href}

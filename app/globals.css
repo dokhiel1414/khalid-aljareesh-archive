@@ -121,8 +121,8 @@ html.dark body {
     @apply block text-sm font-medium text-ink dark:text-sand mb-1.5;
   }
   .card {
-    @apply rounded-2xl bg-white border border-ink/5 shadow-soft hover:shadow-card transition overflow-hidden
-           dark:bg-dark-card dark:border-dark-border;
+    @apply rounded-2xl bg-white border border-ink/5 shadow-soft hover:shadow-card hover:-translate-y-0.5 hover:border-gold/40
+           dark:bg-dark-card dark:border-dark-border dark:hover:border-gold/30 transition overflow-hidden;
   }
   .chip {
     @apply inline-flex items-center gap-1.5 rounded-full bg-ink/5 text-ink px-3 py-1 text-xs font-medium
@@ -374,5 +374,65 @@ html.dark .skeleton {
     animation: none;
   }
   .skeleton { animation: none; }
+}
+
+/* =====================================================================
+   VISUAL EXPANSION — ornaments, hero entrance, scroll reveals
+   Motion rules: entrance/reveal 400–700ms with ease-out, small offsets,
+   everything gated behind prefers-reduced-motion, and no-JS keeps all
+   content visible (html.js gate).
+   ===================================================================== */
+
+/* Eight-point star lattice (khatam) — gold hairlines + lattice dots */
+.pattern-geo {
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='56'%20height='56'%20viewBox='0%200%2056%2056'%20fill='none'%20stroke='%23DEA470'%20stroke-opacity='0.35'%3E%3Crect%20x='18'%20y='18'%20width='20'%20height='20'/%3E%3Crect%20x='18'%20y='18'%20width='20'%20height='20'%20transform='rotate(45%2028%2028)'/%3E%3Ccircle%20cx='0'%20cy='0'%20r='1.5'/%3E%3Ccircle%20cx='56'%20cy='0'%20r='1.5'/%3E%3Ccircle%20cx='0'%20cy='56'%20r='1.5'/%3E%3Ccircle%20cx='56'%20cy='56'%20r='1.5'/%3E%3C/svg%3E");
+  background-size: 56px 56px;
+}
+.pattern-geo-drift { animation: pattern-drift 80s linear infinite; }
+@keyframes pattern-drift {
+  to { background-position: 560px 280px; }
+}
+
+/* Hero entrance — staggered blocks (delay set inline per element) */
+@keyframes hero-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+.hero-in {
+  animation: hero-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Gold gradient display text (hero name) */
+.text-gold-gradient {
+  background: linear-gradient(115deg, #f2c99b 0%, #dea470 45%, #c17e5a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Scroll reveal — armed only when JS is present (html.js) */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.js [data-reveal].revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pattern-geo-drift,
+  .hero-in {
+    animation: none;
+  }
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 

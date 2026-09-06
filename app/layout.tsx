@@ -64,8 +64,11 @@ export const viewport: Viewport = {
 };
 
 // Inline script to set dark/light BEFORE the page paints — avoids a flash.
+// Also flags JS availability so scroll-reveal styles only arm with JS
+// (no-JS visitors always see content).
 const themeInit = `
 (function(){try{
+  document.documentElement.classList.add('js');
   var t = localStorage.getItem('theme');
   if (!t) { t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
   if (t === 'dark') { document.documentElement.classList.add('dark'); }

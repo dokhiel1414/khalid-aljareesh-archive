@@ -18,7 +18,7 @@ export default function TopicCard({ topic }: { topic: Topic }) {
   return (
     <Link
       href={`/topic/${encodeURIComponent(topic.slug)}`}
-      className={`group relative overflow-hidden rounded-xl bg-gradient-to-br ${accent} p-4 text-sand shadow-soft hover:shadow-card transition flex flex-col`}
+      className={`group relative overflow-hidden rounded-xl bg-gradient-to-br ${accent} p-4 text-sand shadow-soft hover:shadow-card hover:-translate-y-1 hover:ring-2 hover:ring-gold/40 transition flex flex-col`}
     >
       {topic.coverImage && (
         // eslint-disable-next-line @next/next/no-img-element
@@ -29,7 +29,7 @@ export default function TopicCard({ topic }: { topic: Topic }) {
           loading="lazy"
         />
       )}
-      <div className="absolute inset-0 arabesque opacity-[0.08]" aria-hidden />
+      <div className="absolute inset-0 pattern-geo opacity-[0.10] group-hover:opacity-[0.16] transition" aria-hidden />
       <div className="relative flex items-center justify-between gap-2">
         <div className="flex items-center gap-2.5 min-w-0">
           <div className="h-9 w-9 shrink-0 rounded-lg bg-sand grid place-items-center border border-gold/40">

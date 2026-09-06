@@ -40,7 +40,7 @@ export default async function TopicsShowcase() {
       </Reveal>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {topics.map((t, i) => (
-          <Reveal key={t.id} delay={(i % 3) * 90}>
+          <Reveal key={t.id} delay={(i % 3) * 90} className="h-full">
             <TopicCard topic={{ ...t, count: t._count.items }} />
           </Reveal>
         ))}

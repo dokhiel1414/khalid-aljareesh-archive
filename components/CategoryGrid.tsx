@@ -41,10 +41,10 @@ export default function CategoryGrid() {
       </Reveal>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {tiles.map((t, i) => (
-          <Reveal key={t.href} delay={i * 90}>
+          <Reveal key={t.href} delay={i * 90} className="h-full">
             <Link
               href={t.href}
-              className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br ${t.accent} p-6 text-sand shadow-soft hover:shadow-card hover:-translate-y-1 hover:ring-2 hover:ring-gold/50 transition`}
+              className={`group relative block h-full overflow-hidden rounded-2xl bg-gradient-to-br ${t.accent} p-6 text-sand shadow-soft hover:shadow-card hover:-translate-y-1 hover:ring-2 hover:ring-gold/50 transition`}
             >
               <div className="absolute inset-0 pattern-geo opacity-[0.12] group-hover:opacity-[0.2] transition" aria-hidden />
               <div className="relative flex items-start justify-between">

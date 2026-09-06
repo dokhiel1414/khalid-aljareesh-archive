@@ -18,7 +18,7 @@ export default function TopicCard({ topic }: { topic: Topic }) {
   return (
     <Link
       href={`/topic/${encodeURIComponent(topic.slug)}`}
-      className={`group relative overflow-hidden rounded-xl bg-gradient-to-br ${accent} p-4 text-sand shadow-soft hover:shadow-card hover:-translate-y-1 hover:ring-2 hover:ring-gold/40 transition flex flex-col`}
+      className={`group relative flex h-full flex-col overflow-hidden rounded-xl bg-gradient-to-br ${accent} p-4 text-sand shadow-soft hover:shadow-card hover:-translate-y-1 hover:ring-2 hover:ring-gold/40 transition`}
     >
       {topic.coverImage && (
         // eslint-disable-next-line @next/next/no-img-element

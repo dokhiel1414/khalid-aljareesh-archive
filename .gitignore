@@ -13,3 +13,7 @@ dist
 
 .vercel
 .env*
+
+# تطبيق الجوال وملفات APK لا تُرفع إلى GitHub (حجمها يتجاوز حد 100MB)
+mobile/
+*.apk

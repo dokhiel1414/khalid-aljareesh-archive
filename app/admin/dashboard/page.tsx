@@ -14,6 +14,7 @@ export default async function DashboardPage() {
     driveLink: string | null;
     driveFileId: string | null;
     thumbnail: string | null;
+    hidden: boolean;
     publishedAt: Date;
     viewCount: number;
     createdAt: Date;

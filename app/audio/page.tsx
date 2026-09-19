@@ -20,7 +20,7 @@ export const metadata = {
 async function getItems() {
   try {
     return await prisma.item.findMany({
-      where: { category: "AUDIO" },
+      where: { category: "AUDIO", hidden: false },
       orderBy: { publishedAt: "desc" },
     });
   } catch {

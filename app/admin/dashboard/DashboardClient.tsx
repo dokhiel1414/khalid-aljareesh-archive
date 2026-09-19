@@ -15,6 +15,7 @@ import {
   X,
   Save,
   Eye,
+  EyeOff,
   Inbox,
   Mail,
   CheckCircle2,
@@ -53,6 +54,7 @@ type Item = {
   driveLink: string | null;
   driveFileId: string | null;
   thumbnail: string | null;
+  hidden: boolean;
   publishedAt: string;
   viewCount: number;
   createdAt: string;
@@ -103,8 +105,35 @@ export default function DashboardClient({
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
   const [editing, setEditing] = useState<Item | null>(null);
+  const [visibilityFilter, setVisibilityFilter] = useState<
+    "ALL" | "VISIBLE" | "HIDDEN"
+  >("ALL");
 
   const unreadCount = messages.filter((m) => !m.read).length;
+  const hiddenCount = items.filter((i) => i.hidden).length;
+  const visibleItems = items.filter((it) =>
+    visibilityFilter === "ALL"
+      ? true
+      : visibilityFilter === "VISIBLE"
+        ? !it.hidden
+        : it.hidden,
+  );
+
+  /** Toggle the item's public visibility (hide/show) without deleting it. */
+  async function toggleHidden(it: Item) {
+    const next = !it.hidden;
+    setItems((prev) => prev.map((x) => (x.id === it.id ? { ...x, hidden: next } : x)));
+    try {
+      await fetch(`/api/items/${it.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ hidden: next }),
+      });
+    } catch {
+      // revert on failure
+      setItems((prev) => prev.map((x) => (x.id === it.id ? { ...x, hidden: !next } : x)));
+    }
+  }
 
   async function toggleRead(m: Message) {
     const next = !m.read;
@@ -355,23 +384,54 @@ export default function DashboardClient({
         </div>
 
         <div className="lg:col-span-3">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
             <h2 className="font-display font-bold text-ink">المحتوى الحالي</h2>
-            <span className="chip">{itemCountLabel(items.length)}</span>
+            <div className="flex items-center gap-2">
+              <select
+                value={visibilityFilter}
+                onChange={(e) =>
+                  setVisibilityFilter(e.target.value as "ALL" | "VISIBLE" | "HIDDEN")
+                }
+                className="input py-1.5 text-sm w-auto"
+                aria-label="فلتر الإظهار"
+              >
+                <option value="ALL">كل العناصر</option>
+                <option value="VISIBLE">الظاهرة فقط</option>
+                <option value="HIDDEN">المخفية فقط</option>
+              </select>
+              <span className="chip">{itemCountLabel(items.length)}</span>
+              {hiddenCount > 0 && (
+                <span className="chip bg-ink/5 text-ink/60 border-ink/10">
+                  <EyeOff className="h-3.5 w-3.5" />
+                  مخفية {toArabicDigits(hiddenCount)}
+                </span>
+              )}
+            </div>
           </div>
 
           {items.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-ink/15 bg-white p-10 text-center text-ink/60">
               لا توجد عناصر بعد. ابدأ بإضافة أول محتوى من النموذج.
             </div>
+          ) : visibleItems.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-ink/15 bg-white p-8 text-center text-ink/60">
+              {visibilityFilter === "HIDDEN"
+                ? "لا توجد عناصر مخفية حالياً."
+                : "لا توجد عناصر ظاهرة ضمن هذا الفلتر."}
+            </div>
           ) : (
             <ul className="space-y-3">
-              {items.map((it) => {
+              {visibleItems.map((it) => {
                 const Icon = ICONS[it.category];
                 return (
                   <li
                     key={it.id}
-                    className="bg-white border border-ink/10 rounded-2xl p-4 flex items-start gap-4 hover:shadow-soft transition"
+                    className={
+                      "bg-white border rounded-2xl p-4 flex items-start gap-4 hover:shadow-soft transition " +
+                      (it.hidden
+                        ? "border-dashed border-ink/15 opacity-75"
+                        : "border-ink/10")
+                    }
                   >
                     <div className="h-11 w-11 shrink-0 rounded-xl bg-sand grid place-items-center text-brown">
                       <Icon className="h-5 w-5" />
@@ -386,6 +446,12 @@ export default function DashboardClient({
                           {it.title}
                         </Link>
                         <span className="chip-gold">{CATEGORY_LABEL[it.category]}</span>
+                        {it.hidden && (
+                          <span className="chip bg-ink/5 text-ink/60 border-ink/10">
+                            <EyeOff className="h-3.5 w-3.5" />
+                            مخفية
+                          </span>
+                        )}
                       </div>
                       {it.description && (
                         <p className="text-sm text-ink/60 mt-1 line-clamp-2">
@@ -437,6 +503,21 @@ export default function DashboardClient({
                       )}
                     </div>
                     <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => toggleHidden(it)}
+                        className={
+                          "btn-ghost px-2 h-9 hover:bg-ink/5 " +
+                          (it.hidden ? "text-ink/40" : "text-brown")
+                        }
+                        aria-label={it.hidden ? "إظهار في الموقع" : "إخفاء من الموقع"}
+                        title={it.hidden ? "إظهار في الموقع" : "إخفاء من الموقع"}
+                      >
+                        {it.hidden ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
                       <button
                         onClick={() => setEditing(it)}
                         className="btn-ghost text-ink hover:bg-ink/5 px-2 h-9"

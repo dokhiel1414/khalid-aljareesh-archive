@@ -45,7 +45,8 @@ const DOWNLOAD_LABEL = {
 async function getItem(id: string) {
   try {
     return await prisma.item.findUnique({
-      where: { id },
+      // Hidden items are treated as not found on the public site.
+      where: { id, hidden: false },
       include: {
         topics: {
           include: { topic: true },
@@ -62,7 +63,7 @@ async function getItem(id: string) {
 async function getProgramNav(topicId: string, currentItemId: string) {
   try {
     const eps = await prisma.itemTopic.findMany({
-      where: { topicId },
+      where: { topicId, item: { hidden: false } },
       orderBy: [{ episodeOrder: "asc" }, { item: { publishedAt: "asc" } }],
       select: {
         episodeOrder: true,

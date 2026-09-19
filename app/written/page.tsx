@@ -24,6 +24,7 @@ async function getItems() {
     // a lecture that has both a recording and a transcript discoverable here too.
     return await prisma.item.findMany({
       where: {
+        hidden: false,
         OR: [
           { category: "WRITTEN" },
           { AND: [{ content: { not: null } }, { content: { not: "" } }] },

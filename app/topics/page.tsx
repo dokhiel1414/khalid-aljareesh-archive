@@ -19,7 +19,10 @@ async function getTopics() {
   try {
     return await prisma.topic.findMany({
       orderBy: [{ order: "asc" }, { name: "asc" }],
-      include: { _count: { select: { items: true } } },
+      // Count only publicly visible items (hidden ones stay in the dashboard).
+      include: {
+        _count: { select: { items: { where: { item: { hidden: false } } } } },
+      },
     });
   } catch {
     return [];

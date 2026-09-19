@@ -22,7 +22,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let items: { id: string; updatedAt: Date }[] = [];
   let topics: { slug: string; updatedAt: Date }[] = [];
   try {
-    items = await prisma.item.findMany({ select: { id: true, updatedAt: true } });
+    items = await prisma.item.findMany({
+      where: { hidden: false },
+      select: { id: true, updatedAt: true },
+    });
     topics = await prisma.topic.findMany({ select: { slug: true, updatedAt: true } });
   } catch {
     /* DB unavailable (e.g., local dev) — ship static routes only */

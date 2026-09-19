@@ -28,7 +28,7 @@ function parseDate(s?: string) {
 
 async function runSearch(sp: SP) {
   try {
-    const where: Prisma.ItemWhereInput = {};
+    const where: Prisma.ItemWhereInput = { hidden: false };
     if (sp.q && sp.q.trim()) {
       const q = sp.q.trim();
       where.OR = [

@@ -1,0 +1,18 @@
+# App الجوال لا يُرفع إلى Vercel
+mobile
+*.apk
+
+# أدوات محلية لا حاجة لها في البناء
+.agents
+skills-lock.json
+tsconfig.tsbuildinfo
+next-env.d.ts
+
+# ملفات البيئة المحلية (تُضبط متغيرات البيئة من لوحة Vercel)
+.env*
+!.env.example
+
+# سجلات ومخرجات مؤقتة
+*.log
+node_modules
+.next

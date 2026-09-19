@@ -15,6 +15,7 @@ export const revalidate = 60;
 async function getLatest() {
   try {
     return await prisma.item.findMany({
+      where: { hidden: false },
       orderBy: { publishedAt: "desc" },
       take: 8,
     });

@@ -14,9 +14,13 @@ export async function GET(req: Request) {
   const category = url.searchParams.get("category");
   const limit = Math.min(Number(url.searchParams.get("limit") ?? 50), 200);
   const items = await prisma.item.findMany({
-    where: category && CATEGORIES.has(category)
-      ? { category: category as "AUDIO" | "VIDEO" | "WRITTEN" }
-      : undefined,
+    where: {
+      // Public listing never includes items the admin hid from the site.
+      hidden: false,
+      ...(category && CATEGORIES.has(category)
+        ? { category: category as "AUDIO" | "VIDEO" | "WRITTEN" }
+        : {}),
+    },
     orderBy: { publishedAt: "desc" },
     take: limit,
   });

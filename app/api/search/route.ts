@@ -18,7 +18,7 @@ export async function GET(req: Request) {
     ? Math.min(Math.floor(limitParam), 100)
     : 100;
 
-  const where: Prisma.ItemWhereInput = {};
+  const where: Prisma.ItemWhereInput = { hidden: false };
   if (q) {
     where.OR = [
       { title: { contains: q, mode: "insensitive" } },

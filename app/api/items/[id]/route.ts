@@ -17,7 +17,8 @@ export async function GET(
     where: { id: params.id },
     include: { topics: { select: { topicId: true, episodeOrder: true } } },
   });
-  if (item) return NextResponse.json({ item });
+  // Hidden items are invisible to the public site: treat them as not found.
+  if (item && !item.hidden) return NextResponse.json({ item });
   const dev = await loadDevItems();
   const devItem = dev.find((i) => i.id === params.id);
   if (devItem) return NextResponse.json({ item: devItem });
@@ -48,6 +49,7 @@ export async function PUT(
     driveLink?: string | null;
     driveFileId?: string | null;
     thumbnail?: string | null;
+    hidden?: boolean;
     publishedAt?: Date;
   } = {};
 
@@ -85,6 +87,9 @@ export async function PUT(
       typeof body.thumbnail === "string" && body.thumbnail.trim()
         ? body.thumbnail.trim()
         : null;
+  }
+  if (typeof body.hidden === "boolean") {
+    data.hidden = body.hidden;
   }
   if ("publishedAt" in body && body.publishedAt) {
     const d = new Date(String(body.publishedAt));
@@ -128,6 +133,44 @@ function normalizeArticleContent(input: string): string {
     .split(/\n\s*\n+/)
     .map((para) => `<p>${para.replace(/\n/g, "<br/>")}</p>`)
     .join("\n");
+}
+
+/**
+ * Quick visibility toggle from the dashboard: { hidden: boolean }.
+ * Hidden items disappear from the public site but remain in the dashboard.
+ */
+export async function PATCH(
+  req: Request,
+  { params }: { params: { id: string } },
+) {
+  const session = await getServerSession();
+  if (!session) {
+    return NextResponse.json({ error: "غير مصرّح." }, { status: 401 });
+  }
+
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "صيغة غير صحيحة." }, { status: 400 });
+  }
+
+  if (typeof body.hidden !== "boolean") {
+    return NextResponse.json(
+      { error: "قيمة الإخفاء مطلوبة." },
+      { status: 400 },
+    );
+  }
+
+  try {
+    const item = await prisma.item.update({
+      where: { id: params.id },
+      data: { hidden: body.hidden },
+    });
+    return NextResponse.json({ item });
+  } catch {
+    return NextResponse.json({ error: "لم يتم العثور على العنصر." }, { status: 404 });
+  }
 }
 
 export async function DELETE(

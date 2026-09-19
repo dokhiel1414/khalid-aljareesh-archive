@@ -7,6 +7,41 @@ export const runtime = "nodejs";
 
 const TYPES = new Set(["THEME", "PROGRAM"]);
 
+/**
+ * Public endpoint for the mobile app: returns a topic (by id or slug) with
+ * its items ordered by episode order (programs) then publish date.
+ * Items are "light" — article HTML bodies are stripped to keep payloads small.
+ */
+export async function GET(
+  _req: Request,
+  { params }: { params: { id: string } },
+) {
+  const id = decodeURIComponent(params.id);
+  try {
+    const topic = await prisma.topic.findFirst({
+      where: { OR: [{ id }, { slug: id }] },
+      include: {
+        items: {
+          where: { item: { hidden: false } },
+          include: { item: true },
+          orderBy: [{ episodeOrder: "asc" }, { item: { publishedAt: "desc" } }],
+        },
+      },
+    });
+    if (!topic) {
+      return NextResponse.json({ error: "الموضوع غير موجود." }, { status: 404 });
+    }
+    const items = topic.items.map(({ episodeOrder, item }) => {
+      const { content: _content, ...light } = item;
+      return { ...light, episodeOrder };
+    });
+    const { items: _join, ...meta } = topic;
+    return NextResponse.json({ topic: meta, items });
+  } catch {
+    return NextResponse.json({ topic: null, items: [] }, { status: 500 });
+  }
+}
+
 export async function PATCH(
   req: Request,
   { params }: { params: { id: string } },

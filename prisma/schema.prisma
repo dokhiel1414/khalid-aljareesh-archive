@@ -36,6 +36,9 @@ model Item {
   driveLink   String?   @map("drive_link")
   driveFileId String?   @map("drive_file_id")
   thumbnail   String?
+  /// When true the item is hidden from the public site but stays in the
+  /// dashboard so the admin can show it again.
+  hidden      Boolean   @default(false)
   publishedAt DateTime  @default(now()) @map("published_at")
   viewCount   Int       @default(0)   @map("view_count")
   createdAt   DateTime  @default(now()) @map("created_at")

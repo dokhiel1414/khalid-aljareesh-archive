@@ -17,6 +17,7 @@ async function getTopic(slug: string) {
       where: { slug },
       include: {
         items: {
+          where: { item: { hidden: false } },
           include: { item: true },
           orderBy: [{ episodeOrder: "asc" }, { item: { publishedAt: "desc" } }],
         },

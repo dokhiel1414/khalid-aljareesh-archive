@@ -1,0 +1,18 @@
+# البحث — من Hero، كتابة استعلام، نتائج حية، وسجل بحث حديث
+appId: com.kalgrysh.archive
+---
+- launchApp
+- tapOn:
+    id: "hero-search"
+- assertVisible:
+    id: "search-input"
+- tapOn:
+    id: "search-input"
+- inputText: "الحج"
+- assertVisible:
+    id: "search-results"
+# تأكيد البحث يضيفه للبحث الأخير
+- pressKey: ENTER
+- hideKeyboard
+- assertVisible:
+    id: "search-results"

@@ -1,0 +1,31 @@
+# الصوتيات — تشغيل أول صوتية، المشغّل المصغّر، ثم المشغّل الكامل
+appId: com.kalgrysh.archive
+---
+- launchApp
+- tapOn:
+    id: "tab-audio"
+- assertVisible:
+    id: "list-audio"
+- tapOn:
+    id: "item-card-.*"
+    index: 0
+- assertVisible:
+    id: "item-detail"
+- tapOn:
+    id: "item-play"
+# المشغّل المصغّر يظهر فوق التبويبات
+- assertVisible:
+    id: "mini-player"
+# فتح المشغّل الكامل (شاشة نموذجية)
+- tapOn:
+    id: "mini-player"
+- assertVisible:
+    id: "player-play-pause"
+- assertVisible:
+    id: "player-seek-slider"
+# إيقاف مؤقت ثم رجوع — المشغّل يبقى في الخلفية
+- tapOn:
+    id: "player-play-pause"
+- back
+- assertVisible:
+    id: "mini-player"

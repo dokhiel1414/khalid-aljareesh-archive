@@ -1,0 +1,19 @@
+# الإعدادات — تبديل المظهر الداكن وضبط حجم خط المقالات
+appId: com.kalgrysh.archive
+---
+- launchApp
+- tapOn:
+    id: "tab-more"
+- tapOn:
+    id: "more-settings"
+- assertVisible:
+    id: "theme-system"
+- tapOn:
+    id: "theme-dark"
+- tapOn:
+    id: "article-scale-1.3"
+- assertVisible:
+    id: "settings-haptics"
+- back
+- assertVisible:
+    id: "more-site"

@@ -1,0 +1,24 @@
+# التبويبات الخمسة — التنقل بينها وعرض كل قائمة فئة
+appId: com.kalgrysh.archive
+---
+- launchApp
+- tapOn:
+    id: "tab-audio"
+- assertVisible:
+    id: "list-audio"
+- tapOn:
+    id: "tab-video"
+- assertVisible:
+    id: "list-video"
+- tapOn:
+    id: "tab-written"
+- assertVisible:
+    id: "list-written"
+- tapOn:
+    id: "tab-more"
+- assertVisible:
+    id: "more-site"
+- tapOn:
+    id: "tab-index"
+- assertVisible:
+    id: "home-list"

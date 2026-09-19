@@ -1,0 +1,22 @@
+# المقالات — فتح مقالة والتحقق من عارض HTML الأصلي وشريط الأدوات
+appId: com.kalgrysh.archive
+---
+- launchApp
+- tapOn:
+    id: "tab-written"
+- assertVisible:
+    id: "list-written"
+- tapOn:
+    id: "item-card-.*"
+    index: 0
+- assertVisible:
+    id: "item-detail"
+# شريط الأدوات موجود دائماً للمقالة (نسخ/مشاركة/حفظ/خط)
+- assertVisible:
+    id: "item-copy"
+- scrollUntilVisible:
+    element:
+      id: "article-font-inc"
+    direction: DOWN
+- tapOn:
+    id: "article-font-inc"

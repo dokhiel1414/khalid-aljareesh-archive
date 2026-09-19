@@ -1,0 +1,15 @@
+# المواضيع والبرامج — شبكة المواضيع ثم شاشة موضوع/برنامج
+appId: com.kalgrysh.archive
+---
+- launchApp
+- scrollUntilVisible:
+    element: "جميع المواضيع"
+    direction: DOWN
+- tapOn: "جميع المواضيع"
+- assertVisible:
+    id: "topics-list"
+- tapOn:
+    id: "topic-card-.*"
+    index: 0
+- assertVisible:
+    id: "topic-list-.*"

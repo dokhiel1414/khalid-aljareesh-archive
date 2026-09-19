@@ -1,0 +1,42 @@
+name: mobile1 CI
+
+# فحص جودة تطبيق أندرويد (mobile1): التبعيات + الأنواع + التنسيق + الاختبارات.
+# البناءات الموقّعة تتم محلياً أو عبر EAS (eas.json) — لا بنية مدفوعة هنا.
+
+on:
+  push:
+    paths:
+      - "mobile1/**"
+  pull_request:
+    paths:
+      - "mobile1/**"
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile1
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile1/package-lock.json
+
+      - name: تثبيت التبعيات
+        run: npm ci
+
+      - name: فحص الأنواع (TypeScript)
+        run: npx tsc --noEmit
+
+      - name: فحص التنسيق (ESLint)
+        run: npx expo lint
+
+      - name: الاختبارات (Jest)
+        run: npx jest --ci
+
+      - name: فحص صحة مشروع Expo
+        run: npx expo-doctor

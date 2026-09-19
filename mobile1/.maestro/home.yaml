@@ -1,0 +1,16 @@
+# الرئيسية — فتح التطبيق والتحقق من Hero والبوابات وشريط التبويبات
+appId: com.kalgrysh.archive
+---
+- launchApp
+- assertVisible:
+    id: "home-list"
+- assertVisible:
+    id: "hero-search"
+- assertVisible:
+    id: "tab-bar"
+- assertVisible: "مكتبة خالد بن علي الجريش الرقمية"
+- assertVisible: "آخر الإضافات"
+- scrollUntilVisible:
+    element:
+      id: "tab-audio"
+    direction: DOWN

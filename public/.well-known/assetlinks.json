@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.kalgrysh.archive",
+      "sha256_cert_fingerprints": [
+        "3DCEEA24614B2297EB53C3039531B90EDAB0BC9AE3837D7DA2C5B93589F4803F"
+      ]
+    }
+  }
+]
